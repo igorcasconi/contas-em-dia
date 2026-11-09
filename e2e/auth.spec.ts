@@ -13,6 +13,9 @@ test.describe("cadastro", () => {
     await page.getByRole("button", { name: "Criar conta" }).click();
 
     await expect(page).toHaveURL(/\/onboarding$/);
+
+    await page.goto("/login");
+    await expect(page).toHaveURL(/\/$/);
   });
 
   test("mostra erro para email já cadastrado", async ({ page }) => {
@@ -40,5 +43,12 @@ test.describe("login", () => {
 
     await expect(page.getByRole("alert").filter({ hasText: "Email ou senha inválidos" })).toBeVisible();
     await user.remove();
+  });
+});
+
+test.describe("rotas protegidas", () => {
+  test("redireciona anônimo para o login", async ({ page }) => {
+    await page.goto("/");
+    await expect(page).toHaveURL(/\/login$/);
   });
 });

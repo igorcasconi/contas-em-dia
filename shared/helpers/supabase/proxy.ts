@@ -3,9 +3,15 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import type { Database } from "@/shared/types/database";
 
+import { isSessionExpired } from "../session-expiry";
 import { supabaseKey, supabaseUrl } from "./env";
 
-/** Renova os tokens da sessão e repassa os cookies atualizados para request e response. */
+const GUEST_ONLY_ROUTES = ["/login", "/cadastro"];
+
+/**
+ * Renova os tokens da sessão, aplica o limite de 30 dias e faz os redirects otimistas.
+ * Autorização real fica no DAL (verifySession).
+ */
 export const updateSession = async (request: NextRequest) => {
   let response = NextResponse.next({ request });
 
@@ -22,7 +28,25 @@ export const updateSession = async (request: NextRequest) => {
   });
 
   // Não inserir código entre createServerClient e getClaims: pode deslogar usuários aleatoriamente.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+
+  // Redirect carrega os cookies já atualizados (refresh ou signOut)
+  const redirectTo = (pathname: string) => {
+    const redirect = NextResponse.redirect(new URL(pathname, request.url));
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  };
+
+  const isGuestOnlyRoute = GUEST_ONLY_ROUTES.includes(request.nextUrl.pathname);
+
+  if (claims && isSessionExpired(claims.amr)) {
+    await supabase.auth.signOut();
+    return redirectTo("/login");
+  }
+
+  if (!claims && !isGuestOnlyRoute) return redirectTo("/login");
+  if (claims && isGuestOnlyRoute) return redirectTo("/");
 
   return response;
 };
