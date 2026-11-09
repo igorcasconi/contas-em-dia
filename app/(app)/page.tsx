@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import { AddPaymentDialog } from "@/domains/payments/components/AddPaymentDialog";
+import { getMonthPayables } from "@/domains/payments/services/payables";
 import { requireOnboarded } from "@/domains/profile/services/profile";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { Skeleton } from "@/shared/components/ui/skeleton";
@@ -10,10 +12,20 @@ const Greeting = async () => {
   return <PageHeader title={`Olá, ${name}`} aside={formatMonth(currentMonth())} />;
 };
 
+const AddPayment = async () => {
+  const rows = await getMonthPayables();
+  return <AddPaymentDialog pendingRows={rows.filter(({ paymentId }) => !paymentId)} />;
+};
+
 export default function HomePage() {
   return (
-    <Suspense fallback={<Skeleton className="h-7 w-48" />}>
-      <Greeting />
-    </Suspense>
+    <>
+      <Suspense fallback={<Skeleton className="h-7 w-48" />}>
+        <Greeting />
+      </Suspense>
+      <Suspense fallback={<Skeleton className="h-10" />}>
+        <AddPayment />
+      </Suspense>
+    </>
   );
 }
