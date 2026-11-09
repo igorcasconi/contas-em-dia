@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { FormField } from "@/shared/components/FormField";
+import { MoneyField } from "@/shared/components/MoneyInput";
 import { Button } from "@/shared/components/ui/button";
 
 import { completeOnboardingAction } from "../actions/profile";
@@ -14,16 +15,12 @@ export const OnboardingForm = () => {
   return (
     <form action={action} className="flex flex-col gap-4">
       <FormField label="Como podemos te chamar?" name="name" autoComplete="given-name" errors={failure?.fieldErrors?.name} />
-      <div className="flex flex-col gap-1">
-        <FormField
-          label="Salário líquido mensal"
-          name="salary"
-          inputMode="decimal"
-          placeholder="R$ 0,00"
-          errors={failure?.fieldErrors?.salary}
-        />
-        <p className="text-sm text-muted-foreground">Vale a partir deste mês.</p>
-      </div>
+      <MoneyField
+        label="Salário líquido mensal"
+        name="salary"
+        hint="Vale a partir deste mês."
+        errors={failure?.fieldErrors?.salary}
+      />
       {failure && !failure.fieldErrors && (
         <p role="alert" className="text-sm text-destructive">
           {failure.error}
