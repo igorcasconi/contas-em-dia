@@ -8,7 +8,8 @@ const secretKey = process.env.SUPABASE_SECRET_KEY!;
 
 const clientOptions = { auth: { persistSession: false, autoRefreshToken: false } };
 
-const admin = createClient<Database>(url, secretKey, clientOptions);
+/** Client com secret key (ignora RLS) — só para preparar cenários nos testes. */
+export const admin = createClient<Database>(url, secretKey, clientOptions);
 
 /** Cria usuário confirmado e retorna um client autenticado como ele. */
 export const createTestUser = async () => {

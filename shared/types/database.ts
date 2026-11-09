@@ -79,6 +79,58 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"payment_items": {
+                  Row: {
+                    "amount_cents": number,"card_item_id": string,"id": string,"included": boolean,"payment_id": string,"prev_ended_at": string | null,"prev_remaining_months": number | null,"prev_status": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_cents": number,"card_item_id": string,"id"?: string,"included": boolean,"payment_id": string,"prev_ended_at"?: string | null,"prev_remaining_months"?: number | null,"prev_status": string,"user_id": string
+                  }
+                  Update: {
+                    "amount_cents"?: number,"card_item_id"?: string,"id"?: string,"included"?: boolean,"payment_id"?: string,"prev_ended_at"?: string | null,"prev_remaining_months"?: number | null,"prev_status"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payment_items_card_item_fkey"
+      columns: ["card_item_id","user_id"]
+isOneToOne: false
+      referencedRelation: "card_items"
+      referencedColumns: ["id","user_id"]
+    },{
+      foreignKeyName: "payment_items_payment_fkey"
+      columns: ["payment_id","user_id"]
+isOneToOne: false
+      referencedRelation: "payments"
+      referencedColumns: ["id","user_id"]
+    }
+                  ]
+                },"payments": {
+                  Row: {
+                    "bank_id": string | null,"bill_id": string | null,"created_at": string,"id": string,"kind": string,"month": string,"total_cents": number,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "bank_id"?: string | null,"bill_id"?: string | null,"created_at"?: string,"id"?: string,"kind": string,"month": string,"total_cents": number,"user_id": string
+                  }
+                  Update: {
+                    "bank_id"?: string | null,"bill_id"?: string | null,"created_at"?: string,"id"?: string,"kind"?: string,"month"?: string,"total_cents"?: number,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payments_bank_fkey"
+      columns: ["bank_id","user_id"]
+isOneToOne: false
+      referencedRelation: "banks"
+      referencedColumns: ["id","user_id"]
+    },{
+      foreignKeyName: "payments_bill_fkey"
+      columns: ["bill_id","user_id"]
+isOneToOne: false
+      referencedRelation: "bills"
+      referencedColumns: ["id","user_id"]
+    }
+                  ]
                 },"profiles": {
                   Row: {
                     "created_at": string,"id": string,"name": string
@@ -118,6 +170,12 @@ isOneToOne: false
                            },
 "current_month":
 { Args: Record<PropertyKey, never>; Returns: string
+                           },
+"insert_payment":
+{ Args: { "p_bank_id": string,"p_bill_id": string,"p_kind": string,"p_total_cents": number,"p_user_id": string }; Returns: string
+                           },
+"pay_bill":
+{ Args: { "p_amount_cents"?: number,"p_bill_id": string }; Returns: string
                            }
           }
           Enums: {
