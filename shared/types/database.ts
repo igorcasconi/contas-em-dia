@@ -184,6 +184,9 @@ isOneToOne: false
                            },
 "pay_card":
 { Args: { "p_bank_id": string,"p_items": Json }; Returns: string
+                           },
+"undo_payment":
+{ Args: { "p_payment_id": string }; Returns: undefined
                            }
           }
           Enums: {
