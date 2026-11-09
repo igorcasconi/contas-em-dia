@@ -315,7 +315,7 @@ App web mobile-first onde o usuário cadastra uma vez suas recorrências (boleto
 | PAG-03 | P1: Pagamento de cartão — pausar/reativar/remover | In Tasks | Implementing |
 | PAG-04 | P1: Pagamento de cartão — decremento de parcelas | In Tasks | Implementing |
 | HOME-01 | P1: Tela inicial — salário e sobra | In Tasks | In Tasks |
-| HOME-02 | P1: Tela inicial — lista e ordenação | In Tasks | In Tasks |
+| HOME-02 | P1: Tela inicial — lista e ordenação | In Tasks | Implementing |
 | GRAF-01 | P1: Gráficos — anual | In Tasks | In Tasks |
 | GRAF-02 | P1: Gráficos — por banco | In Tasks | In Tasks |
 | SAL-01 | P1: Atualizar salário | In Tasks | In Tasks |

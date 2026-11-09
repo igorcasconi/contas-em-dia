@@ -622,8 +622,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: PAG-01, PAG-02, UNDO-01
 
 **Done when**:
-- [ ] Unit dos schemas (ids uuid, itens não vazios, amount opcional)
-- [ ] Gate quick; ~4 tests pass
+- [x] Unit dos schemas (ids uuid, itens não vazios, amount opcional); ao menos um item incluído
+- [x] Gate quick; 6 tests pass
 
 **Tests**: unit · **Gate**: quick
 
@@ -637,8 +637,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: HOME-02, PAG-01, PAG-02
 
 **Done when**:
-- [ ] Unit: ordenação; banco pago usa total/itens do pagamento; boleto encerrado pago no mês aparece; variável não pago sem valor; banco só com pausados aparece
-- [ ] Gate quick; ~7 tests pass
+- [x] Unit: ordenação; banco pago usa total/itens do pagamento; boleto encerrado pago no mês aparece; variável não pago sem valor; banco só com pausados aparece — `getPendingBills`/`getPendingBanks`/`getPaidTotal` substituídos por filtro das linhas + `sumPaid` puro (uma única query `getMonthPayables`, com `cache()`)
+- [x] Gate quick; 6 tests pass
 
 **Tests**: unit · **Gate**: quick
 
