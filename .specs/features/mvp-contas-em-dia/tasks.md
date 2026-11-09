@@ -543,8 +543,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: BOL-01, BOL-02
 
 **Done when**:
-- [ ] e2e: criar fixo e variável (campo some), editar, remover com confirmação, aviso sem tipo
-- [ ] Gate e2e; ~4 tests pass
+- [x] e2e: criar fixo e variável (campo some), editar, remover com confirmação, aviso sem tipo — hooks `useRecordDialogs`/`useModalFormAction`, `RecordActions`, `SelectField`, `UrlTabs`, `SetupRequired` compartilhados
+- [x] Gate e2e; 2 tests pass (1 fluxo × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
@@ -558,8 +558,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: CART-01, CART-02
 
 **Done when**:
-- [ ] e2e: criar recorrente e parcelado (campo meses condicional), badges corretos, remover
-- [ ] Gate e2e; ~3 tests pass
+- [x] e2e: criar recorrente e parcelado (campo meses condicional), badges corretos, remover, aviso sem banco, link direto `?aba=cartao`, erro preserva dados digitados
+- [x] Gate e2e; 2 tests pass (1 fluxo × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
