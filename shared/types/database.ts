@@ -165,7 +165,12 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "complete_onboarding":
+            "card_selection":
+{ Args: { "p_bank_id": string,"p_items": Json,"p_user_id": string }; Returns: {
+              "amount_cents": number,"card_item_id": string,"ended_at": string,"included": boolean,"pause": boolean,"remaining_months": number,"status": string
+            }[]
+                           },
+"complete_onboarding":
 { Args: { "p_amount_cents": number,"p_name": string }; Returns: undefined
                            },
 "current_month":
@@ -176,6 +181,9 @@ isOneToOne: false
                            },
 "pay_bill":
 { Args: { "p_amount_cents"?: number,"p_bill_id": string }; Returns: string
+                           },
+"pay_card":
+{ Args: { "p_bank_id": string,"p_items": Json }; Returns: string
                            }
           }
           Enums: {
