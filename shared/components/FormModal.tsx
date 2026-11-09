@@ -22,6 +22,7 @@ type FormModalProps = {
   pending: boolean;
   error?: string;
   submitLabel?: string;
+  submitDisabled?: boolean;
   children: ReactNode;
 };
 
@@ -35,6 +36,7 @@ export const FormModal = ({
   pending,
   error,
   submitLabel = "Salvar",
+  submitDisabled,
   children,
 }: FormModalProps) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
@@ -56,7 +58,7 @@ export const FormModal = ({
               Cancelar
             </Button>
           </DialogClose>
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" disabled={pending || submitDisabled}>
             {submitLabel}
           </Button>
         </DialogFooter>
