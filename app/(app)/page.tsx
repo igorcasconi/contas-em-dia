@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 
+import { endCardItemAction } from "@/domains/card-items/actions/card-items";
 import { AddPaymentDialog } from "@/domains/payments/components/AddPaymentDialog";
 import { getMonthPayables } from "@/domains/payments/services/payables";
 import { requireOnboarded } from "@/domains/profile/services/profile";
@@ -14,7 +15,12 @@ const Greeting = async () => {
 
 const AddPayment = async () => {
   const rows = await getMonthPayables();
-  return <AddPaymentDialog pendingRows={rows.filter(({ paymentId }) => !paymentId)} />;
+  return (
+    <AddPaymentDialog
+      pendingRows={rows.filter(({ paymentId }) => !paymentId)}
+      removeCardItemAction={endCardItemAction}
+    />
+  );
 };
 
 export default function HomePage() {

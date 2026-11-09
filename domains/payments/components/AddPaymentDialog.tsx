@@ -7,8 +7,11 @@ import { SelectField } from "@/shared/components/SelectField";
 import { Button } from "@/shared/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 
+import type { ActionResult } from "@/shared/helpers/action-result";
+
 import type { PayableRow } from "../services/build-payable-rows";
 import { BillPaymentForm } from "./BillPaymentForm";
+import { CardPaymentForm } from "./CardPaymentForm";
 
 type PaymentKind = PayableRow["kind"];
 
@@ -17,8 +20,15 @@ const KIND_OPTIONS = [
   { value: "card", label: "Cartão de crédito" },
 ];
 
-/** Botão + modal para registrar um pagamento do mês. Recebe só as linhas ainda não pagas. */
-export const AddPaymentDialog = ({ pendingRows }: { pendingRows: PayableRow[] }) => {
+type AddPaymentDialogProps = {
+  /** Linhas do mês ainda não pagas. */
+  pendingRows: PayableRow[];
+  /** Encerra um item recorrente do cartão (domínio card-items, injetado pela página). */
+  removeCardItemAction: (id: string) => Promise<ActionResult>;
+};
+
+/** Botão + modal para registrar um pagamento do mês. */
+export const AddPaymentDialog = ({ pendingRows, removeCardItemAction }: AddPaymentDialogProps) => {
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<PaymentKind>();
 
@@ -28,6 +38,7 @@ export const AddPaymentDialog = ({ pendingRows }: { pendingRows: PayableRow[] })
   };
 
   const pendingBills = pendingRows.filter((row) => row.kind === "bill");
+  const pendingCards = pendingRows.filter((row) => row.kind === "card");
 
   return (
     <Dialog open={open} onOpenChange={changeOpen}>
@@ -49,6 +60,13 @@ export const AddPaymentDialog = ({ pendingRows }: { pendingRows: PayableRow[] })
           options={KIND_OPTIONS}
         />
         {kind === "bill" && <BillPaymentForm bills={pendingBills} onDone={() => changeOpen(false)} />}
+        {kind === "card" && (
+          <CardPaymentForm
+            banks={pendingCards}
+            removeItemAction={removeCardItemAction}
+            onDone={() => changeOpen(false)}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
