@@ -298,8 +298,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: ONB-01
 
 **Done when**:
-- [ ] Unit do schema (vazio, 0, negativo, válido)
-- [ ] Gate quick; ~4 tests pass
+- [x] Unit do schema (vazio, 0, negativo, válido) + `moneyField` compartilhado (6); `requireOnboarded` em `domains/profile/services` (shared não importa domains)
+- [x] Gate quick; 9 tests pass
 
 **Tests**: unit · **Gate**: quick
 
@@ -313,8 +313,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: ONB-01, AUTH-01
 
 **Done when**:
-- [ ] e2e: cadastro → `/onboarding` → envia → `/`; login sem onboarding → `/onboarding`
-- [ ] Gate e2e; ~2 tests pass
+- [x] e2e: cadastro → `/onboarding` → envia → `/` (login sem onboarding coberto no e2e da T14)
+- [x] Gate e2e; 2 tests pass
 
 **Tests**: e2e · **Gate**: e2e
 
@@ -328,8 +328,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: NAV-01, AUTH-04
 
 **Done when**:
-- [ ] e2e em 375px e 1280px: 3 entradas navegam; auth/onboarding sem nav
-- [ ] Gate e2e; ~2 tests pass
+- [x] e2e em 375px e 1280px: 3 entradas navegam; auth/onboarding sem nav; login sem onboarding → `/onboarding` sem nav
+- [x] Gate e2e; 4 tests pass
 
 **Tests**: e2e · **Gate**: e2e
 
@@ -343,9 +343,9 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: AUTH-04, NAV-01
 
 **Done when**:
-- [ ] Unit do `profileSchema`
-- [ ] e2e: alterar nome reflete no header; Sair → `/login` e `/` redireciona
-- [ ] Gate quick + e2e
+- [x] Unit do `profileSchema` — `SignOutButton` em `domains/auth/components`
+- [x] e2e: alterar nome reflete no header; Sair → `/login` e `/` redireciona
+- [x] Gate quick + e2e
 
 **Tests**: unit + e2e · **Gate**: e2e
 
