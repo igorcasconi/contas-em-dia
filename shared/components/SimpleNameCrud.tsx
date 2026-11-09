@@ -1,16 +1,14 @@
 "use client";
 
-import { PencilIcon, Trash2Icon } from "lucide-react";
-import { useActionState, useState, useTransition } from "react";
-
 import type { ActionResult } from "@/shared/helpers/action-result";
+import { useModalFormAction, useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
 
 import { ConfirmDialog } from "./ConfirmDialog";
 import { EmptyState } from "./EmptyState";
 import { Fab } from "./Fab";
 import { FormField } from "./FormField";
 import { FormModal } from "./FormModal";
-import { Button } from "./ui/button";
+import { RecordActions } from "./RecordActions";
 
 type Item = { id: string; name: string };
 
@@ -32,24 +30,19 @@ type NameFormModalProps = Pick<SimpleNameCrudProps, "entityLabel" | "createActio
 };
 
 const NameFormModal = ({ item, entityLabel, createAction, updateAction, onClose }: NameFormModalProps) => {
-  const [state, action, pending] = useActionState<ActionResult | null, FormData>(async (previous, formData) => {
-    const result = await (item ? updateAction : createAction)(previous, formData);
-    if (result.ok) onClose();
-    return result;
-  }, null);
-  const failure = state?.ok === false ? state : undefined;
+  const { formAction, pending, fieldErrors, error } = useModalFormAction(item ? updateAction : createAction, onClose);
 
   return (
     <FormModal
       title={item ? `Editar ${entityLabel}` : `Novo ${entityLabel}`}
       open
       onOpenChange={(open) => !open && onClose()}
-      action={action}
+      action={formAction}
       pending={pending}
-      error={failure?.fieldErrors ? undefined : failure?.error}
+      error={error}
     >
       {item && <input type="hidden" name="id" value={item.id} />}
-      <FormField label="Nome" name="name" defaultValue={item?.name} autoFocus errors={failure?.fieldErrors?.name} />
+      <FormField label="Nome" name="name" defaultValue={item?.name} autoFocus errors={fieldErrors?.name} />
     </FormModal>
   );
 };
@@ -63,20 +56,7 @@ export const SimpleNameCrud = ({
   updateAction,
   deleteAction,
 }: SimpleNameCrudProps) => {
-  const [editing, setEditing] = useState<{ item?: Item }>();
-  const [deleting, setDeleting] = useState<Item>();
-  const [deleteError, setDeleteError] = useState<string>();
-  const [deletePending, startDelete] = useTransition();
-
-  const openForm = (item?: Item) => setEditing({ item });
-
-  const confirmDelete = () =>
-    startDelete(async () => {
-      if (!deleting) return;
-      const result = await deleteAction(deleting.id);
-      if (result.ok) setDeleting(undefined);
-      else setDeleteError(result.error);
-    });
+  const dialogs = useRecordDialogs<Item>(deleteAction);
 
   return (
     <>
@@ -85,22 +65,11 @@ export const SimpleNameCrud = ({
           {items.map((item) => (
             <li key={item.id} className="flex items-center justify-between gap-2 py-1 pr-1 pl-4">
               <span>{item.name}</span>
-              <span className="flex">
-                <Button variant="ghost" size="icon-lg" aria-label={`Editar ${item.name}`} onClick={() => openForm(item)}>
-                  <PencilIcon aria-hidden />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-lg"
-                  aria-label={`Excluir ${item.name}`}
-                  onClick={() => {
-                    setDeleteError(undefined);
-                    setDeleting(item);
-                  }}
-                >
-                  <Trash2Icon aria-hidden />
-                </Button>
-              </span>
+              <RecordActions
+                name={item.name}
+                onEdit={() => dialogs.openForm(item)}
+                onRemove={() => dialogs.askRemove(item)}
+              />
             </li>
           ))}
         </ul>
@@ -108,29 +77,29 @@ export const SimpleNameCrud = ({
         <EmptyState message={emptyMessage} />
       )}
 
-      <Fab aria-label={`Novo ${entityLabel}`} onClick={() => openForm()} />
+      <Fab aria-label={`Novo ${entityLabel}`} onClick={() => dialogs.openForm()} />
 
       {/* Montado só enquanto aberto: cada abertura começa sem erro anterior */}
-      {editing && (
+      {dialogs.editing && (
         <NameFormModal
-          item={editing.item}
+          item={dialogs.editing.item}
           entityLabel={entityLabel}
           createAction={createAction}
           updateAction={updateAction}
-          onClose={() => setEditing(undefined)}
+          onClose={dialogs.closeForm}
         />
       )}
 
       <ConfirmDialog
-        open={!!deleting}
-        onOpenChange={(open) => !open && setDeleting(undefined)}
+        open={!!dialogs.removing}
+        onOpenChange={(open) => !open && dialogs.cancelRemove()}
         title={`Excluir ${entityLabel}?`}
-        description={`"${deleting?.name}" será excluído permanentemente.`}
+        description={`"${dialogs.removing?.name}" será excluído permanentemente.`}
         confirmLabel="Excluir"
         destructive
-        pending={deletePending}
-        error={deleteError}
-        onConfirm={confirmDelete}
+        pending={dialogs.removePending}
+        error={dialogs.removeError}
+        onConfirm={dialogs.confirmRemove}
       />
     </>
   );
