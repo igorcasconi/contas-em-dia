@@ -19,6 +19,52 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"bills": {
+                  Row: {
+                    "amount_cents": number | null,"category_id": string,"created_at": string,"ended_at": string | null,"id": string,"name": string,"user_id": string,"value_mode": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_cents"?: number | null,"category_id": string,"created_at"?: string,"ended_at"?: string | null,"id"?: string,"name": string,"user_id"?: string,"value_mode": string
+                  }
+                  Update: {
+                    "amount_cents"?: number | null,"category_id"?: string,"created_at"?: string,"ended_at"?: string | null,"id"?: string,"name"?: string,"user_id"?: string,"value_mode"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "bills_category_fkey"
+      columns: ["category_id","user_id"]
+isOneToOne: false
+      referencedRelation: "categories"
+      referencedColumns: ["id","user_id"]
+    }
+                  ]
+                },"card_items": {
+                  Row: {
+                    "amount_cents": number,"bank_id": string,"category_id": string,"created_at": string,"ended_at": string | null,"id": string,"name": string,"remaining_months": number | null,"status": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_cents": number,"bank_id": string,"category_id": string,"created_at"?: string,"ended_at"?: string | null,"id"?: string,"name": string,"remaining_months"?: number | null,"status"?: string,"user_id"?: string
+                  }
+                  Update: {
+                    "amount_cents"?: number,"bank_id"?: string,"category_id"?: string,"created_at"?: string,"ended_at"?: string | null,"id"?: string,"name"?: string,"remaining_months"?: number | null,"status"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "card_items_bank_fkey"
+      columns: ["bank_id","user_id"]
+isOneToOne: false
+      referencedRelation: "banks"
+      referencedColumns: ["id","user_id"]
+    },{
+      foreignKeyName: "card_items_category_fkey"
+      columns: ["category_id","user_id"]
+isOneToOne: false
+      referencedRelation: "categories"
+      referencedColumns: ["id","user_id"]
+    }
+                  ]
                 },"categories": {
                   Row: {
                     "created_at": string,"id": string,"name": string,"user_id": string
