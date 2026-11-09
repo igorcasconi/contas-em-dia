@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { FormField } from "@/shared/components/FormField";
 import { MoneyField } from "@/shared/components/MoneyInput";
 import { Button } from "@/shared/components/ui/button";
+import { submitWithoutReset } from "@/shared/utils/form";
 
 import { completeOnboardingAction } from "../actions/profile";
 
@@ -13,7 +14,7 @@ export const OnboardingForm = () => {
   const failure = state?.ok === false ? state : undefined;
 
   return (
-    <form action={action} className="flex flex-col gap-4">
+    <form onSubmit={submitWithoutReset(action)} className="flex flex-col gap-4">
       <FormField label="Como podemos te chamar?" name="name" autoComplete="given-name" errors={failure?.fieldErrors?.name} />
       <MoneyField
         label="Salário líquido mensal"

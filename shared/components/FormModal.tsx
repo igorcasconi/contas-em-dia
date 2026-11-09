@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 
 import { Button } from "@/shared/components/ui/button";
+import { submitWithoutReset } from "@/shared/utils/form";
 import {
   Dialog,
   DialogClose,
@@ -41,7 +42,7 @@ export const FormModal = ({
 }: FormModalProps) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent>
-      <form action={action} className="flex flex-col gap-4">
+      <form onSubmit={submitWithoutReset(action)} className="flex flex-col gap-4">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

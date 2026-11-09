@@ -4,6 +4,7 @@ import { useActionState } from "react";
 
 import { FormField } from "@/shared/components/FormField";
 import { Button } from "@/shared/components/ui/button";
+import { submitWithoutReset } from "@/shared/utils/form";
 
 import { signInAction } from "../actions/auth";
 
@@ -12,7 +13,7 @@ export const SignInForm = () => {
   const failure = state?.ok === false ? state : undefined;
 
   return (
-    <form action={action} className="flex flex-col gap-4">
+    <form onSubmit={submitWithoutReset(action)} className="flex flex-col gap-4">
       <FormField label="Email" name="email" type="email" autoComplete="email" errors={failure?.fieldErrors?.email} />
       <FormField
         label="Senha"

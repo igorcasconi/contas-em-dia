@@ -42,6 +42,7 @@ test.describe("login", () => {
     await page.getByRole("button", { name: "Entrar" }).click();
 
     await expect(page.getByRole("alert").filter({ hasText: "Email ou senha inválidos" })).toBeVisible();
+    await expect(page.getByLabel("Email")).toHaveValue(user.email);
     await user.remove();
   });
 });
