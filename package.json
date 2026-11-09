@@ -10,7 +10,8 @@
     "test": "vitest run --project unit",
     "test:int": "vitest run --project integration",
     "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:types": "supabase gen types typescript --schema public > shared/types/database.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -35,6 +36,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "supabase": "^3.1.0",
     "tailwindcss": "4.3.3",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
