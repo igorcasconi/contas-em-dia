@@ -1,5 +1,15 @@
 import { describe, expect, test } from "vitest";
-import { formatBRL, parseBRL } from "./money";
+import { formatBRL, moneyField, parseBRL } from "./money";
+
+describe("moneyField", () => {
+  test("transforms valid input into cents", () => {
+    expect(moneyField.parse("R$ 5.000,00")).toBe(500000);
+  });
+
+  test.each(["", "abc", "0", "0,00"])("rejects %j", (input) => {
+    expect(moneyField.safeParse(input).error?.issues[0].message).toBe("Informe um valor maior que zero");
+  });
+});
 
 const normalize = (value: string) => value.replace(/ /g, " ");
 
