@@ -169,8 +169,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: HOME-01, PAG-01
 
 **Done when**:
-- [ ] Casos: `0`, `12345 → "R$ 123,45"`, negativos, `"1.234,56" → 123456`, entrada inválida → `null`
-- [ ] Gate quick; ~8 tests pass
+- [x] Casos: `0`, `12345 → "R$ 123,45"`, negativos, `"1.234,56" → 123456`, entrada inválida → `null`
+- [x] Gate quick; 16 tests pass
 
 **Tests**: unit · **Gate**: quick
 
@@ -184,8 +184,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: HOME-02, SAL-01
 
 **Done when**:
-- [ ] Caso de borda: `2026-12-01T02:00Z` → `2026-11-01` (ainda novembro em SP)
-- [ ] Gate quick; ~5 tests pass
+- [x] Caso de borda: `2026-12-01T02:00Z` → `2026-11-01` (ainda novembro em SP)
+- [x] Gate quick; 6 tests pass
 
 **Tests**: unit · **Gate**: quick
 
@@ -201,8 +201,8 @@ T41, T42 ──→ T43 ──→ T44
 **Tools**: Skill: `search` (assinatura atual de `setAll` em `@supabase/ssr` 0.12)
 
 **Done when**:
-- [ ] Tipados com `Database`
-- [ ] Gate quick passa
+- [x] Tipados com `Database` — `client.ts` (browser) não criado: sem uso no MVP (design §8); `env.ts` compartilhado adicionado
+- [x] Gate quick passa
 
 **Tests**: none (wrapper de lib) · **Gate**: quick
 
@@ -216,8 +216,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: AUTH-04
 
 **Done when**:
-- [ ] `mapDbError` cobre os 3 códigos + fallback genérico
-- [ ] Gate quick; ~4 tests pass
+- [x] `mapDbError` cobre os 3 códigos + fallback genérico
+- [x] Gate quick; 4 tests pass
 
 **Tests**: unit · **Gate**: quick
 
