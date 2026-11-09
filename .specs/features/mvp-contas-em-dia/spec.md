@@ -304,8 +304,8 @@ App web mobile-first onde o usuário cadastra uma vez suas recorrências (boleto
 | AUTH-03 | P1: Cadastro e login — refresh + 30 dias | In Tasks | Implementing |
 | AUTH-04 | P1: Cadastro e login — rotas protegidas/logout | In Tasks | Implementing |
 | ONB-01 | P1: Onboarding | In Tasks | Implementing |
-| TIPO-01 | P1: Cadastro de tipos | In Tasks | In Tasks |
-| BANCO-01 | P1: Cadastro de bancos | In Tasks | In Tasks |
+| TIPO-01 | P1: Cadastro de tipos | In Tasks | Implementing |
+| BANCO-01 | P1: Cadastro de bancos | In Tasks | Implementing |
 | BOL-01 | P1: Cadastro de boletos — fixo/variável | In Tasks | In Tasks |
 | BOL-02 | P1: Cadastro de boletos — editar/remover | In Tasks | In Tasks |
 | CART-01 | P1: Itens de cartão — recorrente/parcelado | In Tasks | In Tasks |

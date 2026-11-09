@@ -420,8 +420,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: TIPO-01
 
 **Done when**:
-- [ ] Unit do schema (vazio, espaços, válido)
-- [ ] Gate quick; ~3 tests pass
+- [x] Unit do schema (vazio, espaços, válido) — schema e CRUD compartilhados em `shared/helpers/name-record*` (categories e banks idênticos); domínio expõe actions/services finos
+- [x] Gate quick; 4 tests pass
 
 **Tests**: unit · **Gate**: quick
 
@@ -435,8 +435,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: BANCO-01
 
 **Done when**:
-- [ ] Unit do schema
-- [ ] Gate quick; ~3 tests pass
+- [x] Unit do schema — reutiliza `name-record` (sem schema próprio)
+- [x] Gate quick; sem novos testes
 
 **Tests**: unit · **Gate**: quick
 
@@ -450,8 +450,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: TIPO-01
 
 **Done when**:
-- [ ] e2e: criar, editar, duplicado mostra erro, estado vazio
-- [ ] Gate e2e; ~3 tests pass
+- [x] e2e: criar, editar, duplicado mostra erro, estado vazio, excluir
+- [x] Gate e2e; 2 tests pass (1 fluxo × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
@@ -465,8 +465,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: BANCO-01
 
 **Done when**:
-- [ ] e2e: criar, editar, duplicado mostra erro
-- [ ] Gate e2e; ~2 tests pass
+- [x] e2e: criar, editar, duplicado mostra erro
+- [x] Gate e2e; 2 tests pass (1 fluxo × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
