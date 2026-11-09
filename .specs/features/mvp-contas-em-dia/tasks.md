@@ -482,8 +482,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: BOL-01, CART-01, TIPO-01, BANCO-01
 
 **Done when**:
-- [ ] Integration: fixo sem valor falha; variável com valor falha; parcelado pausado falha; excluir tipo/banco em uso → 23503; RLS
-- [ ] Gate full; ~6 tests pass
+- [x] Integration: fixo sem valor falha; variável com valor falha; parcelado pausado falha; excluir tipo/banco em uso → 23503; RLS; FKs compostas (id, user_id) impedem referenciar tipo/banco de outro usuário
+- [x] Gate full; 8 tests pass
 
 **Tests**: integration · **Gate**: full
 
@@ -497,7 +497,7 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: PAG-01, HOME-01
 
 **Done when**:
-- [ ] Gate quick passa
+- [x] Gate quick passa — `MoneyField` + `FieldShell` (casca comum com `FormField`); onboarding passou a usar `MoneyField`
 
 **Tests**: none (shared UI) · **Gate**: quick
 
@@ -511,8 +511,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: BOL-01, BOL-02
 
 **Done when**:
-- [ ] Unit: fixo sem valor inválido; variável ignora valor; tipo obrigatório
-- [ ] Gate quick; ~5 tests pass
+- [x] Unit: fixo sem valor inválido; variável ignora valor; tipo obrigatório
+- [x] Gate quick; 6 tests pass
 
 **Tests**: unit · **Gate**: quick
 
@@ -526,8 +526,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: CART-01, CART-02
 
 **Done when**:
-- [ ] Unit: parcelado sem meses inválido; 0 meses inválido; recorrente ignora meses
-- [ ] Gate quick; ~5 tests pass
+- [x] Unit: parcelado sem meses inválido; 0 meses inválido; recorrente ignora meses
+- [x] Gate quick; 8 tests pass
 
 **Tests**: unit · **Gate**: quick
 

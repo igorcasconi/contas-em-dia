@@ -306,10 +306,10 @@ App web mobile-first onde o usuário cadastra uma vez suas recorrências (boleto
 | ONB-01 | P1: Onboarding | In Tasks | Implementing |
 | TIPO-01 | P1: Cadastro de tipos | In Tasks | Implementing |
 | BANCO-01 | P1: Cadastro de bancos | In Tasks | Implementing |
-| BOL-01 | P1: Cadastro de boletos — fixo/variável | In Tasks | In Tasks |
-| BOL-02 | P1: Cadastro de boletos — editar/remover | In Tasks | In Tasks |
-| CART-01 | P1: Itens de cartão — recorrente/parcelado | In Tasks | In Tasks |
-| CART-02 | P1: Itens de cartão — editar/remover/status | In Tasks | In Tasks |
+| BOL-01 | P1: Cadastro de boletos — fixo/variável | In Tasks | Implementing |
+| BOL-02 | P1: Cadastro de boletos — editar/remover | In Tasks | Implementing |
+| CART-01 | P1: Itens de cartão — recorrente/parcelado | In Tasks | Implementing |
+| CART-02 | P1: Itens de cartão — editar/remover/status | In Tasks | Implementing |
 | PAG-01 | P1: Pagamento de boleto | In Tasks | In Tasks |
 | PAG-02 | P1: Pagamento de cartão — checklist/total | In Tasks | In Tasks |
 | PAG-03 | P1: Pagamento de cartão — pausar/reativar/remover | In Tasks | In Tasks |
