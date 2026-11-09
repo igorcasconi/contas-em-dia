@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// Supabase local — helpers de e2e usam a admin API
+process.loadEnvFile(".env.development.local");
+
 const baseURL = "http://localhost:3000";
 
 export default defineConfig({

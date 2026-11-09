@@ -24,6 +24,8 @@ export const createTestUser = async () => {
 
   return {
     client,
+    email,
+    password,
     userId: data.user.id,
     remove: () => admin.auth.admin.deleteUser(data.user.id),
   };
