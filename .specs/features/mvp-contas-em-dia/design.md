@@ -603,7 +603,10 @@ erDiagram
     card_items ||--o{ payment_items : snapshot
 ```
 
-### Funções RPC (plpgsql, `security invoker` → RLS aplica)
+### Funções RPC (plpgsql)
+
+- `complete_onboarding`: `security invoker` (RLS aplica).
+- Pagamentos (`pay_bill`, `pay_card`, `undo_payment`): **`security definer`** + `search_path = ''`, filtrando por `auth.uid()`. `payments`/`payment_items` só têm `select` para `authenticated` — escrita apenas via RPC (impede inserir pagamento com valor arbitrário pela API). Helpers internos `insert_payment` e `card_selection` sem `execute` para usuários.
 
 | Função | Faz | Valida |
 | --- | --- | --- |

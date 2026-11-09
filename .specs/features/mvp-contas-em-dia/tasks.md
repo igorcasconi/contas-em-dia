@@ -575,8 +575,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: PAG-01
 
 **Done when**:
-- [ ] Integration: fixo usa valor do cadastro (ignora input); variável exige > 0; 2º pagamento no mês falha; RLS
-- [ ] Gate full; ~5 tests pass
+- [x] Integration: fixo usa valor do cadastro (ignora input); variável exige > 0; 2º pagamento no mês falha; RLS; escrita direta em `payments` bloqueada (42501); boleto encerrado não pode ser pago
+- [x] Gate full; 6 tests pass
 
 **Tests**: integration · **Gate**: full
 
@@ -590,8 +590,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: PAG-02, PAG-03, PAG-04
 
 **Done when**:
-- [ ] Integration: exemplo do spec (30+50+100/3m, desmarca 30 → total 150, parcelado 2m); pausar; reativar pausado; parcelado 1m → encerra; tentar excluir parcelado ignorado; 2º pagamento falha; nenhum incluído falha
-- [ ] Gate full; ~7 tests pass
+- [x] Integration: exemplo do spec (30+50+100/3m, desmarca 30 → total 150, parcelado 2m); pausar; reativar pausado; parcelado 1m → encerra; tentar excluir parcelado ignorado; 2º pagamento falha; nenhum incluído falha
+- [x] Gate full; 8 tests pass
 
 **Tests**: integration · **Gate**: full
 
@@ -605,8 +605,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: UNDO-01
 
 **Done when**:
-- [ ] Integration: desfazer boleto; desfazer cartão restaura parcelas e reabre encerrado; restaura pausado; mês anterior falha
-- [ ] Gate full; ~4 tests pass
+- [x] Integration: desfazer boleto; desfazer cartão restaura parcelas e reabre encerrado; restaura pausado; mês anterior falha; pagamento de outro usuário
+- [x] Gate full; 6 tests pass
 
 **Tests**: integration · **Gate**: full
 
