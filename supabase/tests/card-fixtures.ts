@@ -10,7 +10,8 @@ export const seedBankWithItems = async ({ client }: TestUser, bankName: string, 
   const { data: bank } = await client.from("banks").insert({ name: bankName }).select("id").single();
   const { data: rows, error } = await client
     .from("card_items")
-    .insert(items.map((item) => ({ ...item, bank_id: bank!.id, category_id: category!.id })))
+    // Insert em lote: chave ausente em algum objeto vira null (não default) — status explícito
+    .insert(items.map((item) => ({ status: "active", ...item, bank_id: bank!.id, category_id: category!.id })))
     .select("id, name");
   if (error) throw error;
 
