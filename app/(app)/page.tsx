@@ -2,6 +2,7 @@ import { Suspense } from "react";
 
 import { endCardItemAction } from "@/domains/card-items/actions/card-items";
 import { AddPaymentDialog } from "@/domains/payments/components/AddPaymentDialog";
+import { PayableList } from "@/domains/payments/components/PayableList";
 import { getMonthPayables } from "@/domains/payments/services/payables";
 import { requireOnboarded } from "@/domains/profile/services/profile";
 import { PageHeader } from "@/shared/components/PageHeader";
@@ -23,6 +24,8 @@ const AddPayment = async () => {
   );
 };
 
+const MonthPayables = async () => <PayableList rows={await getMonthPayables()} />;
+
 export default function HomePage() {
   return (
     <>
@@ -32,6 +35,14 @@ export default function HomePage() {
       <Suspense fallback={<Skeleton className="h-10" />}>
         <AddPayment />
       </Suspense>
+      <section aria-labelledby="month-payables" className="flex flex-col gap-3">
+        <h2 id="month-payables" className="font-medium">
+          Pagamentos do mês
+        </h2>
+        <Suspense fallback={<Skeleton className="h-40" />}>
+          <MonthPayables />
+        </Suspense>
+      </section>
     </>
   );
 }
