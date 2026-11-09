@@ -653,7 +653,7 @@ type PayableRow =
 
 | Decision | Choice | Rationale |
 | --- | --- | --- |
-| Limite de 30 dias | **No proxy da app**, não no Supabase | Time-box de sessão do Supabase é só plano Pro; refresh tokens do Supabase não expiram por padrão. Proxy lê o início da sessão pelos claims (`amr[].timestamp` — **verificar na implementação**); fallback: cookie httpOnly `session_started_at` setado no login, ausente = expirado |
+| Limite de 30 dias | **No proxy da app**, não no Supabase | Time-box de sessão do Supabase é só plano Pro; refresh tokens do Supabase não expiram por padrão. Proxy lê o início da sessão pelos claims (`amr[].timestamp`, estável entre refreshes — verificado); sem `amr` com timestamp = expirado |
 | Escritas multi-tabela | Funções Postgres via `rpc()` | supabase-js não tem transação; pagar cartão/desfazer mexem em 3 tabelas |
 | Valores do pagamento | Servidor recalcula a partir do cadastro | Cliente não define valor de fixo/cartão; evita manipulação |
 | Snapshot em `payment_items` | Guarda `prev_*` | Desfazer exato + histórico imune a edições posteriores |
@@ -683,7 +683,7 @@ type PayableRow =
 
 ## 9. Pontos para validar na implementação
 
-- [ ] Claim `amr[].timestamp` presente no JWT do Supabase via `getClaims()` → senão usar cookie `session_started_at`.
+- [x] Claim `amr[].timestamp` presente e estável entre refreshes (verificado em sessão real).
 - [ ] Assinatura atual de `setAll` no `@supabase/ssr` 0.12 (doc menciona headers de cache adicionais).
 - [ ] Unique `lower(name)` exige índice único por expressão (`create unique index … (user_id, lower(name))`), não constraint.
 

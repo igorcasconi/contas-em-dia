@@ -299,11 +299,11 @@ App web mobile-first onde o usuário cadastra uma vez suas recorrências (boleto
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| AUTH-01 | P1: Cadastro e login — cadastro | In Tasks | In Tasks |
-| AUTH-02 | P1: Cadastro e login — login/erros | In Tasks | In Tasks |
-| AUTH-03 | P1: Cadastro e login — refresh + 30 dias | In Tasks | In Tasks |
-| AUTH-04 | P1: Cadastro e login — rotas protegidas/logout | In Tasks | In Tasks |
-| ONB-01 | P1: Onboarding | In Tasks | In Tasks |
+| AUTH-01 | P1: Cadastro e login — cadastro | In Tasks | Implementing |
+| AUTH-02 | P1: Cadastro e login — login/erros | In Tasks | Implementing |
+| AUTH-03 | P1: Cadastro e login — refresh + 30 dias | In Tasks | Implementing |
+| AUTH-04 | P1: Cadastro e login — rotas protegidas/logout | In Tasks | Implementing |
+| ONB-01 | P1: Onboarding | In Tasks | Implementing |
 | TIPO-01 | P1: Cadastro de tipos | In Tasks | In Tasks |
 | BANCO-01 | P1: Cadastro de bancos | In Tasks | In Tasks |
 | BOL-01 | P1: Cadastro de boletos — fixo/variável | In Tasks | In Tasks |

@@ -233,8 +233,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: ONB-01
 
 **Done when**:
-- [ ] Integration: onboarding cria profile + salary do mês atual; 2ª chamada falha; usuário B não lê dados de A
-- [ ] Gate full; ~4 tests pass
+- [x] Integration: onboarding cria profile + salary do mês atual; 2ª chamada falha; usuário B não lê dados de A
+- [x] Gate full; 4 tests pass
 
 **Tests**: integration · **Gate**: full
 
@@ -248,8 +248,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: AUTH-01, AUTH-02
 
 **Done when**:
-- [ ] Unit dos schemas: válidos, email inválido, senha curta, confirmação divergente
-- [ ] Gate quick; ~6 tests pass
+- [x] Unit dos schemas: válidos, email inválido, senha curta, confirmação divergente
+- [x] Gate quick; 6 tests pass (+1 `fromZodError`)
 
 **Tests**: unit · **Gate**: quick
 
@@ -263,8 +263,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: AUTH-01, AUTH-02
 
 **Done when**:
-- [ ] e2e: cadastro novo sai de `/cadastro`; email duplicado mostra erro; login com senha errada mostra "Email ou senha inválidos"
-- [ ] Gate e2e; ~3 tests pass
+- [x] e2e: cadastro novo sai de `/cadastro`; email duplicado mostra erro; login com senha errada mostra "Email ou senha inválidos"
+- [x] Gate e2e; 6 tests pass (mobile + desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
@@ -279,10 +279,10 @@ T41, T42 ──→ T43 ──→ T44
 **Tools**: MCP: claude-in-chrome (inspecionar claims/cookies)
 
 **Done when**:
-- [ ] Verificado se `amr[].timestamp` existe; decisão registrada em `STATE.md`
-- [ ] Unit: 29d23h → válido; 30d+1s → expirado; ausente → expirado
-- [ ] e2e: anônimo em `/` → `/login`
-- [ ] Gate quick + e2e
+- [x] Verificado se `amr[].timestamp` existe; confirmado: timestamp estável entre refreshes (só `iat` muda) → sem fallback por cookie
+- [x] Unit: 29d23h → válido; 30d+1s → expirado; ausente → expirado
+- [x] e2e: anônimo em `/` → `/login`
+- [x] Gate quick + e2e
 
 **Tests**: unit + e2e · **Gate**: e2e
 
