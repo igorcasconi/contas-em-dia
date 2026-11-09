@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { onboardingSchema } from "./profile";
+import { onboardingSchema, profileSchema } from "./profile";
 
 describe("onboardingSchema", () => {
   test("accepts name and salary, trimming the name", () => {
@@ -15,5 +15,15 @@ describe("onboardingSchema", () => {
   test.each(["0", "-10,00"])("rejects salary %s", (salary) => {
     const result = onboardingSchema.safeParse({ name: "Igor", salary });
     expect(result.error?.issues[0].path).toEqual(["salary"]);
+  });
+});
+
+describe("profileSchema", () => {
+  test("trims the name", () => {
+    expect(profileSchema.parse({ name: " Bea " })).toEqual({ name: "Bea" });
+  });
+
+  test("rejects blank name", () => {
+    expect(profileSchema.safeParse({ name: "" }).error?.issues[0].message).toBe("Informe seu nome");
   });
 });

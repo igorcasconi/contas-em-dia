@@ -8,3 +8,5 @@ export const onboardingSchema = z.object({
   name: nameField,
   salary: moneyField,
 });
+
+export const profileSchema = z.object({ name: nameField });
