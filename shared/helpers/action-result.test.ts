@@ -1,5 +1,19 @@
 import { describe, expect, test } from "vitest";
-import { mapDbError } from "./action-result";
+import { z } from "zod";
+
+import { fromZodError, mapDbError } from "./action-result";
+
+describe("fromZodError", () => {
+  test("returns failed result with field errors", () => {
+    const { error } = z.object({ name: z.string().min(1, "Obrigatório") }).safeParse({ name: "" });
+
+    expect(fromZodError(error!)).toEqual({
+      ok: false,
+      error: "Verifique os campos destacados.",
+      fieldErrors: { name: ["Obrigatório"] },
+    });
+  });
+});
 
 describe("mapDbError", () => {
   test("unique violation → duplicated name message", () => {
