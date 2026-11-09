@@ -21,3 +21,9 @@ export const requireOnboarded = cache(async () => {
 
   return { userId, name: profile.name };
 });
+
+/** Sessão válida + onboarding pendente; quem já concluiu vai para a Início. */
+export const requirePendingOnboarding = async () => {
+  const { userId } = await verifySession();
+  if (await getProfile(userId)) redirect("/");
+};
