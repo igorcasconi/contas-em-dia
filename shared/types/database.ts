@@ -2,20 +2,49 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: '14.18'
-  }
+  
   "public": {
           Tables: {
-            [_ in never]: never
+            "profiles": {
+                  Row: {
+                    "created_at": string,"id": string,"name": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id": string,"name": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"name"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"salaries": {
+                  Row: {
+                    "amount_cents": number,"created_at": string,"effective_month": string,"id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_cents": number,"created_at"?: string,"effective_month": string,"id"?: string,"user_id"?: string
+                  }
+                  Update: {
+                    "amount_cents"?: number,"created_at"?: string,"effective_month"?: string,"id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                }
           }
           Views: {
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "complete_onboarding":
+{ Args: { "p_amount_cents": number,"p_name": string }; Returns: undefined
+                           },
+"current_month":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           }
           }
           Enums: {
             [_ in never]: never
