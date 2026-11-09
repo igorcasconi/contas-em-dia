@@ -361,8 +361,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: TIPO-01, BANCO-01
 
 **Done when**:
-- [ ] Integration: duplicado case-insensitive falha (23505); RLS isola usuários
-- [ ] Gate full; ~4 tests pass
+- [x] Integration: duplicado case-insensitive falha (23505); RLS isola usuários
+- [x] Gate full; 8 tests pass (4 × 2 tabelas)
 
 **Tests**: integration · **Gate**: full
 
@@ -376,7 +376,7 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: BOL-02, UNDO-01, SAL-01
 
 **Done when**:
-- [ ] Gate quick passa
+- [x] Gate quick passa — `ConfirmDialog` sobre shadcn `alert-dialog`
 
 **Tests**: none (shared UI) · **Gate**: quick
 
@@ -390,7 +390,7 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: HOME-02
 
 **Done when**:
-- [ ] Gate quick passa
+- [x] Gate quick passa
 
 **Tests**: none (shared UI) · **Gate**: quick
 
@@ -404,7 +404,7 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: TIPO-01, BANCO-01
 
 **Done when**:
-- [ ] Gate quick passa
+- [x] Gate quick passa — editar/excluir como botões de ícone (no lugar do menu ⋮)
 
 **Tests**: none (shared UI) · **Gate**: quick
 
