@@ -24,3 +24,5 @@ export const listCardItemsByBank = async () => {
     .map((items) => ({ bank: items[0].bank, items }))
     .sort((a, b) => a.bank.name.localeCompare(b.bank.name, "pt-BR"));
 };
+
+export type CardItemGroup = Awaited<ReturnType<typeof listCardItemsByBank>>[number];
