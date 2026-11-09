@@ -654,8 +654,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: PAG-01
 
 **Done when**:
-- [ ] e2e: fixo sem campo e total em texto; variável total acompanha digitação; após pagar, boleto some do select
-- [ ] Gate e2e; ~3 tests pass
+- [x] e2e: fixo sem campo e total em texto; variável total acompanha digitação; após pagar, boleto some do select; sem pendentes → "Nenhum boleto pendente neste mês."
+- [x] Gate e2e; 2 tests pass (1 fluxo × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
@@ -669,8 +669,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: PAG-02, PAG-03, PAG-04
 
 **Done when**:
-- [ ] e2e: total atualiza ao desmarcar; parcelado não desmarca; pausar → mês seguinte simulado* vem desmarcado; remover some
-- [ ] Gate e2e; ~4 tests pass
+- [x] e2e: total atualiza ao desmarcar; parcelado não desmarca; pausado (seed) vem desmarcado com badge; pausar marca "Será pausado" e persiste `paused`; marcar pausado reativa; remover some
+- [x] Gate e2e; 2 tests pass (1 fluxo × mobile/desktop) — estado final validado no banco
 
 *Simulação de mês: seed direto no banco local.
 
