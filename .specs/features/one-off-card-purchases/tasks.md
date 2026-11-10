@@ -180,11 +180,11 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] Cabeçalho "Avulsos" + mês atual
-- [ ] Criar → aparece no grupo do banco com subtotal; erros de validação no campo
-- [ ] Editar valor → subtotal atualizado; excluir com confirmação → estado vazio
-- [ ] Sem banco/tipo → `SetupRequired` no modal
-- [ ] Gate: quick + `npx playwright test e2e/card-purchases.spec.ts` (mobile + desktop)
+- [x] Cabeçalho "Avulsos" + mês atual
+- [x] Criar → aparece no grupo do banco com subtotal; erros de validação no campo
+- [x] Editar valor → subtotal atualizado; excluir com confirmação → estado vazio
+- [x] Sem banco/tipo → `SetupRequired` no modal
+- [x] Gate: quick + `npx playwright test e2e/card-purchases.spec.ts` (mobile + desktop)
 
 **Tests**: e2e
 **Gate**: full + e2e do arquivo
