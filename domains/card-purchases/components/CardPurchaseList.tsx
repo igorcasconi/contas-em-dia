@@ -7,17 +7,16 @@ import { MoneyText } from "@/shared/components/MoneyText";
 import { RecordActions } from "@/shared/components/RecordActions";
 import { Badge } from "@/shared/components/ui/badge";
 import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
+import type { NamedRecord } from "@/shared/utils/select-options";
 
 import { deleteCardPurchaseAction } from "../actions/card-purchases";
 import type { CardPurchase, CardPurchaseGroup } from "../services/card-purchases";
 import { CardPurchaseFormModal } from "./CardPurchaseFormModal";
 
-type Option = { id: string; name: string };
-
 type CardPurchaseListProps = {
   groups: CardPurchaseGroup[];
-  categories: Option[];
-  banks: Option[];
+  categories: NamedRecord[];
+  banks: NamedRecord[];
 };
 
 export const CardPurchaseList = ({ groups, categories, banks }: CardPurchaseListProps) => {

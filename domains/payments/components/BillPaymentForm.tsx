@@ -6,6 +6,7 @@ import { MoneyField } from "@/shared/components/MoneyInput";
 import { SelectField } from "@/shared/components/SelectField";
 import { useFormAction } from "@/shared/hooks/use-form-action";
 import { submitWithoutReset } from "@/shared/utils/form";
+import { toSelectOptions } from "@/shared/utils/select-options";
 
 import { payBillAction } from "../actions/payments";
 import type { PayableRow } from "../services/build-payable-rows";
@@ -34,7 +35,7 @@ export const BillPaymentForm = ({ bills, onDone }: { bills: PendingBill[]; onDon
           setBillId(value);
           setVariableAmount(null);
         }}
-        options={bills.map(({ id, name }) => ({ value: id, label: name }))}
+        options={toSelectOptions(bills)}
         errors={fieldErrors?.billId}
       />
       {isVariable && (

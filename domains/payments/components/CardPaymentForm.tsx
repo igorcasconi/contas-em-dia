@@ -13,6 +13,7 @@ import { Checkbox } from "@/shared/components/ui/checkbox";
 import type { ActionResult } from "@/shared/helpers/action-result";
 import { callAction } from "@/shared/helpers/call-action";
 import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
+import { toSelectOptions } from "@/shared/utils/select-options";
 
 import { payCardAction } from "../actions/payments";
 import type { PayableItem, PayableRow } from "../services/build-payable-rows";
@@ -132,7 +133,7 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
           setChoices({});
           setError(undefined);
         }}
-        options={banks.map(({ id, name }) => ({ value: id, label: name }))}
+        options={toSelectOptions(banks)}
       />
 
       {bankId && (

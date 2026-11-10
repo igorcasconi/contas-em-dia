@@ -10,6 +10,7 @@ import { SetupRequired } from "@/shared/components/SetupRequired";
 import { Label } from "@/shared/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
 import { useFormAction } from "@/shared/hooks/use-form-action";
+import { toSelectOptions } from "@/shared/utils/select-options";
 
 import { createBillAction, updateBillAction } from "../actions/bills";
 import type { ActiveBill } from "../services/bills";
@@ -51,7 +52,7 @@ export const BillFormModal = ({ bill, categories, onClose }: BillFormModalProps)
             label="Tipo"
             name="categoryId"
             defaultValue={bill?.category.id}
-            options={categories.map(({ id, name }) => ({ value: id, label: name }))}
+            options={toSelectOptions(categories)}
             errors={fieldErrors?.categoryId}
           />
           <fieldset className="flex flex-col gap-2">

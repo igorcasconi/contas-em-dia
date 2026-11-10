@@ -6,6 +6,7 @@ import { Fab } from "@/shared/components/Fab";
 import { MoneyText } from "@/shared/components/MoneyText";
 import { RecordActions } from "@/shared/components/RecordActions";
 import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
+import type { NamedRecord } from "@/shared/utils/select-options";
 
 import { endCardItemAction } from "../actions/card-items";
 import type { ActiveCardItem, CardItemGroup } from "../services/card-items";
@@ -13,12 +14,10 @@ import { removeCardItemCopy } from "../services/removal-copy";
 import { CardItemFormModal } from "./CardItemFormModal";
 import { CardItemStatusBadge } from "./CardItemStatusBadge";
 
-type Option = { id: string; name: string };
-
 type CardItemListProps = {
   groups: CardItemGroup[];
-  categories: Option[];
-  banks: Option[];
+  categories: NamedRecord[];
+  banks: NamedRecord[];
 };
 
 export const CardItemList = ({ groups, categories, banks }: CardItemListProps) => {

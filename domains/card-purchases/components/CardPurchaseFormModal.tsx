@@ -5,30 +5,18 @@ import { FormModal } from "@/shared/components/FormModal";
 import { MoneyField } from "@/shared/components/MoneyInput";
 import { SelectField } from "@/shared/components/SelectField";
 import { SetupRequired } from "@/shared/components/SetupRequired";
+import { missingCategoryOrBank } from "@/shared/helpers/missing-setup";
 import { useFormAction } from "@/shared/hooks/use-form-action";
+import { type NamedRecord, toSelectOptions } from "@/shared/utils/select-options";
 
 import { createCardPurchaseAction, updateCardPurchaseAction } from "../actions/card-purchases";
 import type { CardPurchase } from "../services/card-purchases";
 
-type Option = { id: string; name: string };
-
 type CardPurchaseFormModalProps = {
   purchase?: CardPurchase;
-  categories: Option[];
-  banks: Option[];
+  categories: NamedRecord[];
+  banks: NamedRecord[];
   onClose: () => void;
-};
-
-const toOptions = (records: Option[]) => records.map(({ id, name }) => ({ value: id, label: name }));
-
-/** Cadastro prévio que falta (tipo, depois banco), ou undefined. */
-const missingSetupFor = (categories: Option[], banks: Option[]) => {
-  if (!categories.length) {
-    return { message: "Cadastre um tipo antes de criar compras avulsas.", href: "/configuracoes/tipos", linkLabel: "Cadastrar tipo" };
-  }
-  if (!banks.length) {
-    return { message: "Cadastre um banco antes de criar compras avulsas.", href: "/configuracoes/bancos", linkLabel: "Cadastrar banco" };
-  }
 };
 
 export const CardPurchaseFormModal = ({ purchase, categories, banks, onClose }: CardPurchaseFormModalProps) => {
@@ -37,7 +25,7 @@ export const CardPurchaseFormModal = ({ purchase, categories, banks, onClose }: 
     onClose,
   );
 
-  const missingSetup = missingSetupFor(categories, banks);
+  const missingSetup = missingCategoryOrBank(categories, banks, "compras avulsas");
 
   return (
     <FormModal
@@ -59,14 +47,14 @@ export const CardPurchaseFormModal = ({ purchase, categories, banks, onClose }: 
             label="Banco"
             name="bankId"
             defaultValue={purchase?.bank.id}
-            options={toOptions(banks)}
+            options={toSelectOptions(banks)}
             errors={fieldErrors?.bankId}
           />
           <SelectField
             label="Tipo"
             name="categoryId"
             defaultValue={purchase?.category.id}
-            options={toOptions(categories)}
+            options={toSelectOptions(categories)}
             errors={fieldErrors?.categoryId}
           />
           <MoneyField label="Valor" name="amount" defaultValue={purchase?.amount_cents} errors={fieldErrors?.amount} />
