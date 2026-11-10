@@ -1,0 +1,67 @@
+"use client";
+
+import type { ReactNode } from "react";
+
+import { Button } from "@/shared/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/components/ui/dialog";
+import { submitWithoutReset } from "@/shared/utils/form";
+
+import { FormError } from "./FormError";
+
+type FormModalProps = {
+  title: string;
+  description?: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  action: (formData: FormData) => void;
+  pending: boolean;
+  error?: string;
+  submitLabel?: string;
+  submitDisabled?: boolean;
+  children: ReactNode;
+};
+
+/** Modal de cadastro/edição. O consumidor controla `open` e fecha após sucesso da action. */
+export const FormModal = ({
+  title,
+  description,
+  open,
+  onOpenChange,
+  action,
+  pending,
+  error,
+  submitLabel = "Salvar",
+  submitDisabled,
+  children,
+}: FormModalProps) => (
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent>
+      <form onSubmit={submitWithoutReset(action)} className="flex flex-col gap-4">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          {description && <DialogDescription>{description}</DialogDescription>}
+        </DialogHeader>
+        {children}
+        <FormError error={error} />
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              Cancelar
+            </Button>
+          </DialogClose>
+          <Button type="submit" disabled={pending || submitDisabled}>
+            {submitLabel}
+          </Button>
+        </DialogFooter>
+      </form>
+    </DialogContent>
+  </Dialog>
+);
