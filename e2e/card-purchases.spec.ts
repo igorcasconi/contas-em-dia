@@ -113,3 +113,42 @@ test("avulsos entram na fatura da Início, são pagos travados e reabrem ao desf
   await expect(row("Nubank")).toContainText("Não pago");
   await expect(leftover).toContainText("R$ 4.880,00");
 });
+
+test("trava avulsos do banco com fatura paga até desfazer o pagamento", async ({ page, onboardedUser: user }) => {
+  const { bankId, ids } = await seedBankWithItems(user, "Nubank", [{ name: "Netflix", amount_cents: 5000 }]);
+  const category = must(await user.client.from("categories").select("id").single());
+  must(await user.client.from("card_purchases").insert({
+    name: "Farmácia", bank_id: bankId, category_id: category.id, amount_cents: 3000,
+  }).select());
+  must(await user.client.rpc("pay_card", { p_bank_id: bankId, p_items: [{ card_item_id: ids.Netflix, included: true }] }));
+
+  await page.goto("/avulsos");
+  const nubank = page.getByRole("region", { name: "Nubank" });
+  await expect(nubank).toContainText("Fatura paga");
+  await expect(nubank.getByRole("listitem").filter({ hasText: "Farmácia" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Editar Farmácia" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Excluir Farmácia" })).toHaveCount(0);
+
+  const dialog = page.getByRole("dialog");
+  await page.getByRole("button", { name: "Nova compra avulsa" }).click();
+  await dialog.getByLabel("Descrição").fill("Mercado");
+  await dialog.getByLabel("Banco").click();
+  await page.getByRole("option", { name: "Nubank" }).click();
+  await dialog.getByLabel("Tipo").click();
+  await page.getByRole("option", { name: "Tipo Nubank" }).click();
+  await dialog.getByLabel("Valor").fill("2000");
+  await dialog.getByRole("button", { name: "Salvar" }).click();
+  await expect(dialog).toContainText("A fatura do Nubank deste mês já foi paga. Desfaça o pagamento na Início para alterar.");
+  await dialog.getByRole("button", { name: "Cancelar" }).click();
+  await expect(nubank.getByRole("listitem")).toHaveCount(1);
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "Desfazer pagamento de Nubank" }).click();
+  await page.getByRole("alertdialog").getByRole("button", { name: "Desfazer" }).click();
+  await expect(page.getByRole("alertdialog")).toBeHidden();
+
+  await page.goto("/avulsos");
+  await expect(nubank).not.toContainText("Fatura paga");
+  await expect(page.getByRole("button", { name: "Editar Farmácia" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Excluir Farmácia" })).toBeVisible();
+});

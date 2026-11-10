@@ -12,9 +12,9 @@ Decisões detalhadas: [context.md](./context.md).
 
 ## Goals
 
-- [ ] Total da fatura de cada banco na Início = soma dos itens recorrentes/parcelados ativos + avulsos do mês
-- [ ] Pagamento registrado da fatura nunca diverge dos itens (avulsos imutáveis após pagamento)
-- [ ] Cadastro de um avulso em ≤ 4 campos, a 1 toque do menu
+- [x] Total da fatura de cada banco na Início = soma dos itens recorrentes/parcelados ativos + avulsos do mês
+- [x] Pagamento registrado da fatura nunca diverge dos itens (avulsos imutáveis após pagamento)
+- [x] Cadastro de um avulso em ≤ 4 campos, a 1 toque do menu
 
 ## Out of Scope
 
@@ -138,7 +138,7 @@ Decisões detalhadas: [context.md](./context.md).
 | PAY-02 | P1: Pagar — `pay_card` soma avulsos (imutáveis enquanto pago) | In Tasks | Done |
 | PAY-03 | P1: Pagar — `undo_payment` reabre avulsos | In Tasks | Done |
 | LOCK-01 | P1: Bloqueio — regra no banco (insert/update/delete) | In Tasks | Done |
-| LOCK-02 | P1: Bloqueio — UI "Fatura paga" + mensagem | In Tasks | In Tasks |
+| LOCK-02 | P1: Bloqueio — UI "Fatura paga" + mensagem | In Tasks | Done |
 
 **Coverage:** 11 total, 11 mapped to tasks, 0 unmapped
 
@@ -146,7 +146,7 @@ Decisões detalhadas: [context.md](./context.md).
 
 ## Success Criteria
 
-- [ ] Integration: RLS isola avulsos por usuário; escrita em banco com fatura paga falha; `pay_card` inclui avulsos no total; `undo_payment` reabre
-- [ ] Unit: schema Zod; `buildPayableRows` com avulsos (soma, ordem, banco só com avulsos, fatura paga lista itens do snapshot + avulsos do banco)
-- [ ] E2E (mobile + desktop): cadastrar → ver na fatura → pagar com avulso travado → bloqueio em `/avulsos` → desfazer → editar/excluir
-- [ ] `npm run lint`, typecheck, unit, integration, build e e2e passando
+- [x] Integration: RLS isola avulsos por usuário; escrita em banco com fatura paga falha; `pay_card` inclui avulsos no total; `undo_payment` reabre
+- [x] Unit: schema Zod; `buildPayableRows` com avulsos (soma, ordem, banco só com avulsos, fatura paga lista itens do snapshot + avulsos do banco)
+- [x] E2E (mobile + desktop): cadastrar → ver na fatura → pagar com avulso travado → bloqueio em `/avulsos` → desfazer → editar/excluir
+- [x] `npm run lint`, typecheck, unit, integration, build e e2e passando

@@ -5,6 +5,7 @@ import { EmptyState } from "@/shared/components/EmptyState";
 import { Fab } from "@/shared/components/Fab";
 import { MoneyText } from "@/shared/components/MoneyText";
 import { RecordActions } from "@/shared/components/RecordActions";
+import { Badge } from "@/shared/components/ui/badge";
 import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
 
 import { deleteCardPurchaseAction } from "../actions/card-purchases";
@@ -25,12 +26,15 @@ export const CardPurchaseList = ({ groups, categories, banks }: CardPurchaseList
   return (
     <>
       {groups.length ? (
-        groups.map(({ bank, items, subtotalCents }) => (
+        groups.map(({ bank, items, subtotalCents, invoicePaid }) => (
           <section key={bank.id} aria-labelledby={`bank-${bank.id}`} className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-2 text-sm text-muted-foreground">
-              <h2 id={`bank-${bank.id}`} className="font-medium">
-                {bank.name}
-              </h2>
+              <span className="flex items-center gap-2">
+                <h2 id={`bank-${bank.id}`} className="font-medium">
+                  {bank.name}
+                </h2>
+                {invoicePaid && <Badge>Fatura paga</Badge>}
+              </span>
               <span>
                 Subtotal <MoneyText cents={subtotalCents} className="font-medium text-foreground" />
               </span>
@@ -44,11 +48,13 @@ export const CardPurchaseList = ({ groups, categories, banks }: CardPurchaseList
                       {item.category.name} · <MoneyText cents={item.amount_cents} />
                     </span>
                   </div>
-                  <RecordActions
-                    name={item.name}
-                    onEdit={() => dialogs.openForm(item)}
-                    onRemove={() => dialogs.askRemove(item)}
-                  />
+                  {!invoicePaid && (
+                    <RecordActions
+                      name={item.name}
+                      onEdit={() => dialogs.openForm(item)}
+                      onRemove={() => dialogs.askRemove(item)}
+                    />
+                  )}
                 </li>
               ))}
             </ul>

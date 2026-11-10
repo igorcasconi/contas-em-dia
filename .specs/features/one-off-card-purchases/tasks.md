@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/one-off-card-purchases/design.md`
 **Testing**: `.specs/codebase/TESTING.md`
-**Status**: Approved
+**Status**: Done
 
 Commit por task: Conventional Commits — `<type>(<scope>): <descrição>`.
 Node 22.16.0 (`.nvmrc`). Integration e e2e exigem Supabase local (`npx supabase start`).
@@ -275,8 +275,8 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] E2E: pagar fatura → `/avulsos` mostra "Fatura paga" sem ações; adicionar avulso no banco pago → mensagem de bloqueio; desfazer → ações voltam
-- [ ] Gate: full + `npx playwright test e2e/card-purchases.spec.ts`
+- [x] E2E: pagar fatura → `/avulsos` mostra "Fatura paga" sem ações; adicionar avulso no banco pago → mensagem de bloqueio; desfazer → ações voltam
+- [x] Gate: full + `npx playwright test e2e/card-purchases.spec.ts`
 
 **Tests**: e2e
 **Gate**: full + e2e do arquivo
