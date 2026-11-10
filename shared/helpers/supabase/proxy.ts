@@ -6,7 +6,8 @@ import type { Database } from "@/shared/types/database";
 import { isSessionExpired } from "../session-expiry";
 import { supabaseKey, supabaseUrl } from "./env";
 
-const GUEST_ONLY_ROUTES = ["/login", "/cadastro"];
+const LANDING_ROUTE = "/inicio";
+const GUEST_ONLY_ROUTES = ["/login", "/cadastro", LANDING_ROUTE];
 
 /**
  * Renova os tokens da sessão, aplica o limite de 30 dias e faz os redirects otimistas.
@@ -31,20 +32,23 @@ export const updateSession = async (request: NextRequest) => {
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
 
-  // Redirect carrega os cookies já atualizados (refresh ou signOut)
-  const redirectTo = (pathname: string) => {
-    const redirect = NextResponse.redirect(new URL(pathname, request.url));
-    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
-    return redirect;
+  // Redirect/rewrite carregam os cookies já atualizados (refresh ou signOut)
+  const withCookies = (target: NextResponse) => {
+    response.cookies.getAll().forEach((cookie) => target.cookies.set(cookie));
+    return target;
   };
+  const redirectTo = (to: string) => withCookies(NextResponse.redirect(new URL(to, request.url)));
 
-  const isGuestOnlyRoute = GUEST_ONLY_ROUTES.includes(request.nextUrl.pathname);
+  const { pathname } = request.nextUrl;
+  const isGuestOnlyRoute = GUEST_ONLY_ROUTES.includes(pathname);
 
   if (claims && isSessionExpired(claims.amr)) {
     await supabase.auth.signOut();
     return redirectTo("/login");
   }
 
+  // Anônimo em / vê a landing sem mudar a URL
+  if (!claims && pathname === "/") return withCookies(NextResponse.rewrite(new URL(LANDING_ROUTE, request.url)));
   if (!claims && !isGuestOnlyRoute) return redirectTo("/login");
   if (claims && isGuestOnlyRoute) return redirectTo("/");
 
