@@ -14,8 +14,9 @@ test.describe("cadastro", () => {
 
     await expect(page).toHaveURL(/\/onboarding$/);
 
+    // Logado em /login → proxy manda para / → guarda manda de volta ao onboarding pendente
     await page.goto("/login");
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/onboarding$/);
   });
 
   test("mostra erro para email já cadastrado", async ({ page }) => {

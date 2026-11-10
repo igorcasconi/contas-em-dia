@@ -11,8 +11,6 @@ export default defineConfig({
   workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  // next dev compila cada rota na primeira visita (ex: logo após um build)
-  expect: { timeout: 15_000 },
   use: {
     baseURL,
     trace: "on-first-retry",
