@@ -15,10 +15,22 @@ import { PageHeader } from "@/shared/components/PageHeader";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { currentMonth, formatMonth } from "@/shared/utils/month";
 
+const AddPayment = async () => (
+  <AddPaymentDialog rows={await getMonthPayables()} removeCardItemAction={endCardItemAction} />
+);
+
 const Greeting = async () => {
   const { name } = await requireOnboarded();
   return (
-    <PageHeader title={`Olá, ${name}`} aside={formatMonth(currentMonth())} />
+    <PageHeader
+      title={`Olá, ${name}`}
+      aside={formatMonth(currentMonth())}
+      action={
+        <Suspense fallback={<Skeleton className="h-10" />}>
+          <AddPayment />
+        </Suspense>
+      }
+    />
   );
 };
 

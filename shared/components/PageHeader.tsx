@@ -1,29 +1,12 @@
-import { endCardItemAction } from "@/domains/card-items/actions/card-items";
-import { AddPaymentDialog } from "@/domains/payments/components/AddPaymentDialog";
-import { getMonthPayables } from "@/domains/payments/services/payables";
-import { Suspense, type ReactNode } from "react";
-import { Skeleton } from "./ui/skeleton";
+import type { ReactNode } from "react";
 
-export const PageHeader = async ({
-  title,
-  aside,
-}: {
-  title: string;
-  aside?: ReactNode;
-}) => (
-  <header className="flex items-baseline justify-between gap-4">
-    <h1 className="font-heading text-xl font-semibold">{title}</h1>
-    {aside && (
-      <div className="flex items-center gap-2">
-        <Suspense fallback={<Skeleton className="h-10" />}>
-          <AddPaymentDialog
-            rows={await getMonthPayables()}
-            removeCardItemAction={endCardItemAction}
-          />
-        </Suspense>
+type PageHeaderProps = { title: string; aside?: ReactNode; action?: ReactNode };
 
-        <span className="text-sm text-muted-foreground ml-3">{aside}</span>
-      </div>
-    )}
+/** Título + texto à direita; no mobile a `action` ocupa uma linha própria em largura total. */
+export const PageHeader = ({ title, aside, action }: PageHeaderProps) => (
+  <header className="flex flex-wrap items-center gap-x-4 gap-y-3">
+    <h1 className="min-w-0 flex-1 truncate font-heading text-xl font-semibold">{title}</h1>
+    {aside && <span className="text-sm text-muted-foreground">{aside}</span>}
+    {action && <div className="w-full lg:w-auto">{action}</div>}
   </header>
 );

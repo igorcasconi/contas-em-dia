@@ -9,15 +9,9 @@ import { PageHeader } from "@/shared/components/PageHeader";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { currentMonth, formatMonth } from "@/shared/utils/month";
 
-// Mês fora do `aside` do PageHeader: o `aside` também renderiza "Adicionar pagamento", que não pertence a esta tela
 const Header = async () => {
   await connection();
-  return (
-    <div className="flex items-baseline justify-between gap-4">
-      <PageHeader title="Avulsos" />
-      <span className="text-sm text-muted-foreground">{formatMonth(currentMonth())}</span>
-    </div>
-  );
+  return <PageHeader title="Avulsos" aside={formatMonth(currentMonth())} />;
 };
 
 const MonthPurchases = async () => {
