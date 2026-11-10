@@ -34,8 +34,7 @@ describe("payCardSchema", () => {
     ]);
   });
 
-  test("requires at least one included item", () => {
-    const result = payCardSchema.safeParse({ bankId: id(), items: [{ cardItemId: id(), included: false }] });
-    expect(result.error?.issues[0]).toMatchObject({ path: ["items"], message: "Selecione ao menos um item." });
+  test("accepts empty items (bank with only card purchases; rule enforced by pay_card)", () => {
+    expect(payCardSchema.safeParse({ bankId: id(), items: [] }).success).toBe(true);
   });
 });

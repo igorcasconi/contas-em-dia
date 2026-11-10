@@ -37,6 +37,7 @@ const CardItems = ({ id, items }: { id: string; items: PayableItem[] }) => (
             </Badge>
           )}
           {item.status === "paused" && <Badge variant="outline">Pausado</Badge>}
+          {item.purchase && <Badge variant="outline">Avulso</Badge>}
         </span>
         <MoneyText cents={item.amountCents} />
       </li>

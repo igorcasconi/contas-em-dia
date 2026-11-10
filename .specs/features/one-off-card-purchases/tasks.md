@@ -251,10 +251,10 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] Unit: `payCardSchema` aceita `items: []`
-- [ ] E2E: avulso aparece na fatura com badge; banco só com avulso mostra linha; checklist com avulso travado e total correto; pagar → sobra reflete; desfazer → "Não pago"
-- [ ] E2E existentes `pay-card.spec.ts`, `payables.spec.ts`, `dashboard.spec.ts` passando
-- [ ] Gate: full + `npx playwright test`
+- [x] Unit: `payCardSchema` aceita `items: []`
+- [x] E2E: avulso aparece na fatura com badge; banco só com avulso mostra linha; checklist com avulso travado e total correto; pagar → sobra reflete; desfazer → "Não pago"
+- [x] E2E existentes `pay-card.spec.ts`, `payables.spec.ts`, `dashboard.spec.ts` passando
+- [x] Gate: full + `npx playwright test`
 
 **Tests**: unit + e2e
 **Gate**: full + e2e completo

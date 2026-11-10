@@ -10,9 +10,8 @@ export const payBillSchema = z.object({
 
 export const payCardSchema = z.object({
   bankId: z.uuid("Selecione o banco"),
-  items: z
-    .array(z.object({ cardItemId: z.uuid(), included: z.boolean(), pause: z.boolean().default(false) }))
-    .refine((items) => items.some(({ included }) => included), "Selecione ao menos um item."),
+  // Vazio é válido (banco só com avulsos); "ao menos um item" é regra do pay_card
+  items: z.array(z.object({ cardItemId: z.uuid(), included: z.boolean(), pause: z.boolean().default(false) })),
 });
 
 export type PayCardInput = z.input<typeof payCardSchema>;

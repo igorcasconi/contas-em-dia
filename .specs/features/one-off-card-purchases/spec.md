@@ -132,11 +132,11 @@ Decisões detalhadas: [context.md](./context.md).
 | AVUL-02 | P1: Cadastro — schema Zod (descrição, banco, tipo, valor) | In Tasks | Done |
 | AVUL-03 | P1: Cadastro — página `/avulsos`, item no menu, lista por banco, vazio, SetupRequired | In Tasks | Done |
 | AVUL-04 | P1: Cadastro — criar/editar/excluir (actions + modais) | In Tasks | Done |
-| HOME-01 | P1: Início — avulsos na fatura, badge, ordem, banco só com avulsos | In Tasks | Implementing |
+| HOME-01 | P1: Início — avulsos na fatura, badge, ordem, banco só com avulsos | In Tasks | Done |
 | HOME-02 | P1: Início — banco só com avulsos no "Adicionar pagamento" | In Tasks | Done |
-| PAY-01 | P1: Pagar — checklist com avulsos travados | In Tasks | In Tasks |
-| PAY-02 | P1: Pagar — `pay_card` soma avulsos (imutáveis enquanto pago) | In Tasks | Implementing |
-| PAY-03 | P1: Pagar — `undo_payment` reabre avulsos | In Tasks | Implementing |
+| PAY-01 | P1: Pagar — checklist com avulsos travados | In Tasks | Done |
+| PAY-02 | P1: Pagar — `pay_card` soma avulsos (imutáveis enquanto pago) | In Tasks | Done |
+| PAY-03 | P1: Pagar — `undo_payment` reabre avulsos | In Tasks | Done |
 | LOCK-01 | P1: Bloqueio — regra no banco (insert/update/delete) | In Tasks | Done |
 | LOCK-02 | P1: Bloqueio — UI "Fatura paga" + mensagem | In Tasks | In Tasks |
 

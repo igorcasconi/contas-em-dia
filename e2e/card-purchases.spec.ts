@@ -1,7 +1,9 @@
+import { seedBankWithItems } from "@/supabase/tests/card-fixtures";
 import { must } from "@/supabase/tests/helpers";
 import { currentMonth, formatMonth } from "@/shared/utils/month";
 
 import { expect, test } from "./fixtures";
+import { openPayment } from "./helpers";
 
 test("cadastra, edita e exclui compras avulsas do mês agrupadas por banco", async ({ page, onboardedUser: user }) => {
   must(await user.client.from("categories").insert({ name: "Saúde" }).select());
@@ -47,4 +49,67 @@ test("cadastra, edita e exclui compras avulsas do mês agrupadas por banco", asy
   await page.getByRole("button", { name: "Excluir Farmácia" }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Excluir" }).click();
   await expect(page.getByText("Nenhuma compra avulsa neste mês.")).toBeVisible();
+});
+
+test("avulsos entram na fatura da Início, são pagos travados e reabrem ao desfazer", async ({ page, onboardedUser: user }) => {
+  const { bankId: nubankId } = await seedBankWithItems(user, "Nubank", [{ name: "Netflix", amount_cents: 5000 }]);
+  const category = must(await user.client.from("categories").select("id").single());
+  const c6 = must(await user.client.from("banks").insert({ name: "C6" }).select("id").single());
+  must(await user.client.from("card_purchases").insert([
+    { name: "Farmácia", bank_id: nubankId, category_id: category.id, amount_cents: 3000 },
+    { name: "Mercado", bank_id: c6.id, category_id: category.id, amount_cents: 12000 },
+  ]).select());
+  await page.reload();
+
+  const rows = page.getByRole("region", { name: "Pagamentos do mês" }).getByRole("list").first().locator(":scope > li");
+  const row = (name: string) => rows.filter({ hasText: name });
+  await expect(row("C6")).toContainText("R$ 120,00");
+  await expect(row("C6")).toContainText("Não pago");
+  await expect(row("Nubank")).toContainText("R$ 80,00");
+
+  await page.getByRole("button", { name: "Itens de Nubank" }).click();
+  const nubankItems = row("Nubank").getByRole("listitem");
+  await expect(nubankItems).toHaveCount(2);
+  await expect(nubankItems.nth(0)).toContainText("Netflix");
+  await expect(nubankItems.nth(0)).not.toContainText("Avulso");
+  await expect(nubankItems.nth(1)).toContainText("Farmácia");
+  await expect(nubankItems.nth(1)).toContainText("Avulso");
+
+  const dialog = await openPayment(page, "Cartão de crédito");
+  await dialog.getByLabel("Banco").click();
+  await page.getByRole("option", { name: "Nubank" }).click();
+  const farmacia = dialog.getByRole("listitem").filter({ hasText: "Farmácia" });
+  await expect(dialog.getByRole("checkbox", { name: "Farmácia" })).toBeChecked();
+  await expect(dialog.getByRole("checkbox", { name: "Farmácia" })).toBeDisabled();
+  await expect(farmacia.getByRole("img", { name: "Avulso" })).toBeVisible();
+  await expect(farmacia.getByRole("button")).toHaveCount(0);
+  await expect(dialog.getByText("Total: R$ 80,00")).toBeVisible();
+  await dialog.getByRole("button", { name: "Confirmar" }).click();
+  await expect(dialog).toBeHidden();
+
+  const leftover = page.getByRole("region", { name: "Sobra" });
+  await expect(leftover).toContainText("R$ 4.920,00");
+  await expect(row("Nubank")).toContainText("Pago");
+  // Fatura segue expandida após o refresh
+  await expect(page.getByRole("button", { name: "Itens de Nubank" })).toHaveAttribute("aria-expanded", "true");
+  await expect(row("Nubank").getByRole("listitem").filter({ hasText: "Farmácia" })).toContainText("Avulso");
+
+  // Banco só com avulsos: paga com items vazios
+  const c6Dialog = await openPayment(page, "Cartão de crédito");
+  await c6Dialog.getByLabel("Banco").click();
+  await page.getByRole("option", { name: "C6" }).click();
+  await expect(c6Dialog.getByRole("checkbox", { name: "Mercado" })).toBeDisabled();
+  await expect(c6Dialog.getByText("Total: R$ 120,00")).toBeVisible();
+  await c6Dialog.getByRole("button", { name: "Confirmar" }).click();
+  await expect(c6Dialog).toBeHidden();
+  await expect(leftover).toContainText("R$ 4.800,00");
+  await expect(row("C6")).toContainText("Pago");
+
+  await page.getByRole("button", { name: "Desfazer pagamento de Nubank" }).click();
+  const confirm = page.getByRole("alertdialog");
+  await expect(confirm).toContainText("Nubank — R$ 80,00");
+  await confirm.getByRole("button", { name: "Desfazer" }).click();
+  await expect(confirm).toBeHidden();
+  await expect(row("Nubank")).toContainText("Não pago");
+  await expect(leftover).toContainText("R$ 4.880,00");
 });
