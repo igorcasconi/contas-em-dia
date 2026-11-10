@@ -11,7 +11,8 @@ const yearMonthFormatter = new Intl.DateTimeFormat("en-CA", {
 /** Primeiro dia do mês corrente no fuso de São Paulo, formato `YYYY-MM-01`. */
 export const currentMonth = (now = new Date()) => `${yearMonthFormatter.format(now)}-01`;
 
-export const formatMonth = (month: string) => {
-  const [year, monthNumber] = month.split("-");
-  return `${MONTH_LABELS[Number(monthNumber) - 1]}/${year}`;
-};
+/** `2026-03-01` → `Mar` */
+export const formatMonthShort = (month: string) => MONTH_LABELS[Number(month.split("-")[1]) - 1];
+
+/** `2026-03-01` → `Mar/2026` */
+export const formatMonth = (month: string) => `${formatMonthShort(month)}/${month.split("-")[0]}`;
