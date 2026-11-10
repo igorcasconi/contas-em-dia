@@ -752,8 +752,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: HOME-01
 
 **Done when**:
-- [ ] Unit: positivo, zero, negativo
-- [ ] Gate quick; ~3 tests pass
+- [x] Unit: positivo, zero, negativo — `getMonthSummary` também expõe `hasPayments` (Início não chama mais `hasAnyPayment` direto)
+- [x] Gate quick; 3 tests pass
 
 **Tests**: unit · **Gate**: quick
 
@@ -767,8 +767,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: GRAF-01, GRAF-02
 
 **Done when**:
-- [ ] Unit: ano sem dados; meses intercalados; meses futuros `null`
-- [ ] Gate quick; ~3 tests pass
+- [x] Unit: ano sem dados; meses intercalados; meses futuros `null`; `getBankTotals` substituído por `toBankTotals(rows)` puro (reusa `getMonthPayables`); `formatMonthShort` em shared
+- [x] Gate quick; 4 tests pass (+1 `formatMonthShort`)
 
 **Tests**: unit · **Gate**: quick
 
