@@ -1,6 +1,4 @@
-import type { createTestUser } from "./helpers";
-
-type TestUser = Awaited<ReturnType<typeof createTestUser>>;
+import type { TestUser } from "./helpers";
 
 type ItemSeed = { name: string; amount_cents: number; remaining_months?: number; status?: string };
 

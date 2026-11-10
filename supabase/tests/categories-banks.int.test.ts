@@ -1,8 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
-import { createTestUser } from "./helpers";
-
-type TestUser = Awaited<ReturnType<typeof createTestUser>>;
+import { type TestUser, createTestUser, must } from "./helpers";
 
 describe.each(["categories", "banks"] as const)("%s", (table) => {
   let userA: TestUser;
@@ -10,16 +8,14 @@ describe.each(["categories", "banks"] as const)("%s", (table) => {
 
   beforeAll(async () => {
     [userA, userB] = await Promise.all([createTestUser(), createTestUser()]);
+    must(await userA.client.from(table).insert({ name: "Internet" }).select());
   });
 
   afterAll(async () => {
     await Promise.all([userA.remove(), userB.remove()]);
   });
 
-  test("creates and lists own records", async () => {
-    const { error } = await userA.client.from(table).insert({ name: "Internet" });
-    expect(error).toBeNull();
-
+  test("lists own records", async () => {
     const { data } = await userA.client.from(table).select("name");
     expect(data).toEqual([{ name: "Internet" }]);
   });
@@ -27,6 +23,11 @@ describe.each(["categories", "banks"] as const)("%s", (table) => {
   test("rejects duplicated name ignoring case", async () => {
     const { error } = await userA.client.from(table).insert({ name: "INTERNET" });
     expect(error?.code).toBe("23505");
+  });
+
+  test("rejects names longer than 100 characters", async () => {
+    const { error } = await userA.client.from(table).insert({ name: "x".repeat(101) });
+    expect(error?.code).toBe("23514");
   });
 
   test("allows the same name for another user", async () => {

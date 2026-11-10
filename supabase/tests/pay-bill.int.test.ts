@@ -2,9 +2,7 @@ import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
 import { currentMonth } from "@/shared/utils/month";
 
-import { createTestUser } from "./helpers";
-
-type TestUser = Awaited<ReturnType<typeof createTestUser>>;
+import { type TestUser, createTestUser } from "./helpers";
 
 describe("pay_bill", () => {
   let userA: TestUser;

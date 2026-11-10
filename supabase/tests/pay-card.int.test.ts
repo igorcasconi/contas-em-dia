@@ -1,9 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
 import { type CardSelection, seedBankWithItems } from "./card-fixtures";
-import { createTestUser } from "./helpers";
-
-type TestUser = Awaited<ReturnType<typeof createTestUser>>;
+import { type TestUser, createTestUser } from "./helpers";
 
 describe("pay_card", () => {
   let user: TestUser;
@@ -112,5 +110,55 @@ describe("pay_card", () => {
 
     const { error } = await payCard(bankId, [{ card_item_id: ids.Revista, included: true }], other);
     expect(error).toMatchObject({ code: "P0001", message: "Banco não encontrado." });
+  });
+
+  test("ignores items from another bank, another user or already ended", async () => {
+    const own = await seedBankWithItems(user, "Original", [{ name: "Própria", amount_cents: 1000 }]);
+    const sibling = await seedBankWithItems(user, "Vizinho", [{ name: "Do vizinho", amount_cents: 7000 }]);
+    const foreign = await seedBankWithItems(other, "Alheio", [{ name: "Alheia", amount_cents: 9000 }]);
+    const ended = await seedBankWithItems(user, "Encerrado", [{ name: "Antiga", amount_cents: 3000 }]);
+    await user.client.from("card_items").update({ ended_at: new Date().toISOString() }).eq("id", ended.ids.Antiga);
+
+    const { data: paymentId, error } = await payCard(own.bankId, [
+      { card_item_id: own.ids["Própria"], included: true },
+      { card_item_id: sibling.ids["Do vizinho"], included: true },
+      { card_item_id: foreign.ids.Alheia, included: true },
+      { card_item_id: ended.ids.Antiga, included: true },
+    ]);
+    expect(error).toBeNull();
+
+    const { data: payment } = await user.client.from("payments").select("total_cents").eq("id", paymentId!).single();
+    expect(payment?.total_cents).toBe(1000);
+
+    const { data: paymentItems } = await user.client.from("payment_items").select("card_item_id").eq("payment_id", paymentId!);
+    expect(paymentItems).toEqual([{ card_item_id: own.ids["Própria"] }]);
+  });
+
+  test("user cannot read another user's payment items", async () => {
+    const { bankId, ids } = await seedBankWithItems(user, "Privado", [{ name: "Item", amount_cents: 1000 }]);
+    await payCard(bankId, [{ card_item_id: ids.Item, included: true }]);
+
+    const { data } = await other.client.from("payment_items").select("id").eq("user_id", user.userId);
+    expect(data).toEqual([]);
+  });
+
+  test("internal security definer helpers are not callable by users", async () => {
+    const { bankId } = await seedBankWithItems(user, "Interno", [{ name: "Item", amount_cents: 1000 }]);
+
+    const { error: insertError } = await other.client.rpc("insert_payment", {
+      p_user_id: user.userId,
+      p_kind: "card",
+      p_bill_id: crypto.randomUUID(),
+      p_bank_id: bankId,
+      p_total_cents: 1,
+    });
+    expect(insertError?.code).toBe("42501");
+
+    const { error: selectionError } = await other.client.rpc("card_selection", {
+      p_user_id: user.userId,
+      p_bank_id: bankId,
+      p_items: [],
+    });
+    expect(selectionError?.code).toBe("42501");
   });
 });

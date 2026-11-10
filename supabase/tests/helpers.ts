@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 import type { Database } from "@/shared/types/database";
+import { currentMonth } from "@/shared/utils/month";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
@@ -30,4 +31,18 @@ export const createTestUser = async () => {
     userId: data.user.id,
     remove: () => admin.auth.admin.deleteUser(data.user.id),
   };
+};
+
+export type TestUser = Awaited<ReturnType<typeof createTestUser>>;
+
+/** Falha explícita no seed: erro aparece na origem, não numa asserção posterior. */
+export const must = <T>({ data, error }: { data: T; error: unknown }) => {
+  if (error || data === null) throw error ?? new Error("Seed sem dados");
+  return data as NonNullable<T>;
+};
+
+/** Primeiro dia do mês anterior ao corrente (fuso de São Paulo). */
+export const previousMonth = () => {
+  const [year, month] = currentMonth().split("-").map(Number);
+  return new Date(Date.UTC(year, month - 2, 1)).toISOString().slice(0, 10);
 };

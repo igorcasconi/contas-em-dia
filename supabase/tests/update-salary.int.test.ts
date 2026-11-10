@@ -2,14 +2,7 @@ import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
 import { currentMonth } from "@/shared/utils/month";
 
-import { admin, createTestUser } from "./helpers";
-
-type TestUser = Awaited<ReturnType<typeof createTestUser>>;
-
-const previousMonth = () => {
-  const [year, month] = currentMonth().split("-").map(Number);
-  return new Date(Date.UTC(year, month - 2, 1)).toISOString().slice(0, 10);
-};
+import { type TestUser, admin, createTestUser, previousMonth } from "./helpers";
 
 describe("update_salary", () => {
   let user: TestUser;
@@ -66,12 +59,22 @@ describe("update_salary", () => {
       .select("id")
       .single();
     await user.client.rpc("pay_bill", { p_bill_id: bill!.id });
+    const before = (await salaries())?.at(-1)?.amount_cents;
 
     const { error } = await user.client.rpc("update_salary", { p_amount_cents: 600000 });
     expect(error).toMatchObject({
       code: "P0001",
       message: "Desfaça os pagamentos do mês para alterar o salário.",
     });
-    expect((await salaries())?.at(-1)?.amount_cents).toBe(550000);
+    expect((await salaries())?.at(-1)?.amount_cents).toBe(before);
+  });
+
+  test("fails before onboarding", async () => {
+    const fresh = await createTestUser();
+
+    const { error } = await fresh.client.rpc("update_salary", { p_amount_cents: 1000 });
+    expect(error).toMatchObject({ code: "P0001", message: "Onboarding não concluído." });
+
+    await fresh.remove();
   });
 });

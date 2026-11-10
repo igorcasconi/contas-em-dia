@@ -1,17 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
-import { currentMonth } from "@/shared/utils/month";
-
 import { type CardSelection, seedBankWithItems } from "./card-fixtures";
-import { admin, createTestUser } from "./helpers";
-
-type TestUser = Awaited<ReturnType<typeof createTestUser>>;
-
-const previousMonth = () => {
-  const [year, month] = currentMonth().split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 2, 1));
-  return date.toISOString().slice(0, 10);
-};
+import { type TestUser, admin, createTestUser, previousMonth } from "./helpers";
 
 describe("undo_payment", () => {
   let user: TestUser;
@@ -108,5 +98,33 @@ describe("undo_payment", () => {
 
     const { error } = await undo(paymentId, other);
     expect(error).toMatchObject({ code: "P0001", message: "Pagamento não encontrado." });
+  });
+
+  test("undo does not resurrect an item removed after the payment", async () => {
+    const { bankId, ids } = await seedBankWithItems(user, "Removido", [
+      { name: "Netflix", amount_cents: 5590 },
+      { name: "Spotify", amount_cents: 2190 },
+    ]);
+    const paymentId = await payCard(bankId, [
+      { card_item_id: ids.Netflix, included: true },
+      { card_item_id: ids.Spotify, included: true },
+    ]);
+    await user.client.from("card_items").update({ ended_at: new Date().toISOString() }).eq("id", ids.Spotify);
+
+    await undo(paymentId);
+
+    expect((await getItem(ids.Spotify)).ended_at).not.toBeNull();
+    expect(await getItem(ids.Netflix)).toMatchObject({ status: "active", ended_at: null });
+  });
+
+  test("undo keeps installment edits made after the payment", async () => {
+    const { bankId, ids } = await seedBankWithItems(user, "Editado", [
+      { name: "TV", amount_cents: 30000, remaining_months: 3 },
+    ]);
+    const paymentId = await payCard(bankId, [{ card_item_id: ids.TV, included: true }]);
+    await user.client.from("card_items").update({ remaining_months: 6 }).eq("id", ids.TV);
+
+    await undo(paymentId);
+    expect((await getItem(ids.TV)).remaining_months).toBe(6);
   });
 });

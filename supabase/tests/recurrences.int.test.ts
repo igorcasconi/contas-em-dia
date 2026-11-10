@@ -1,14 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
-import { createTestUser } from "./helpers";
-
-type TestUser = Awaited<ReturnType<typeof createTestUser>>;
-
-const seedCategoryAndBank = async ({ client }: TestUser) => {
-  const { data: category } = await client.from("categories").insert({ name: "Serviços" }).select("id").single();
-  const { data: bank } = await client.from("banks").insert({ name: "Nubank" }).select("id").single();
-  return { categoryId: category!.id, bankId: bank!.id };
-};
+import { type TestUser, createTestUser, must } from "./helpers";
 
 describe("bills and card_items", () => {
   let userA: TestUser;
@@ -17,7 +9,22 @@ describe("bills and card_items", () => {
 
   beforeAll(async () => {
     [userA, userB] = await Promise.all([createTestUser(), createTestUser()]);
-    a = await seedCategoryAndBank(userA);
+    const category = must(await userA.client.from("categories").insert({ name: "Serviços" }).select("id").single());
+    const bank = must(await userA.client.from("banks").insert({ name: "Nubank" }).select("id").single());
+    a = { categoryId: category.id, bankId: bank.id };
+
+    must(
+      await userA.client
+        .from("bills")
+        .insert({ name: "Base", category_id: a.categoryId, value_mode: "variable" })
+        .select(),
+    );
+    must(
+      await userA.client
+        .from("card_items")
+        .insert({ name: "Base", bank_id: a.bankId, category_id: a.categoryId, amount_cents: 100, status: "active" })
+        .select(),
+    );
   });
 
   afterAll(async () => {
@@ -51,8 +58,15 @@ describe("bills and card_items", () => {
   describe("card_items", () => {
     test("accepts recurring and installment items", async () => {
       const { error } = await userA.client.from("card_items").insert([
-        { name: "Netflix", bank_id: a.bankId, category_id: a.categoryId, amount_cents: 5590 },
-        { name: "Notebook", bank_id: a.bankId, category_id: a.categoryId, amount_cents: 40220, remaining_months: 3 },
+        { name: "Netflix", bank_id: a.bankId, category_id: a.categoryId, amount_cents: 5590, status: "active" },
+        {
+          name: "Notebook",
+          bank_id: a.bankId,
+          category_id: a.categoryId,
+          amount_cents: 40220,
+          remaining_months: 3,
+          status: "active",
+        },
       ]);
       expect(error).toBeNull();
     });
@@ -90,10 +104,27 @@ describe("bills and card_items", () => {
     expect(itemError?.code).toBe("23503");
   });
 
-  test("user cannot read another user's recurrences", async () => {
+  test("user cannot read or update another user's recurrences", async () => {
     const { data: bills } = await userB.client.from("bills").select("id");
     const { data: items } = await userB.client.from("card_items").select("id");
     expect(bills).toEqual([]);
     expect(items).toEqual([]);
+
+    const endedAt = new Date().toISOString();
+    const { data: endedBills } = await userB.client
+      .from("bills")
+      .update({ ended_at: endedAt })
+      .eq("user_id", userA.userId)
+      .select();
+    const { data: endedItems } = await userB.client
+      .from("card_items")
+      .update({ ended_at: endedAt })
+      .eq("user_id", userA.userId)
+      .select();
+    expect(endedBills).toEqual([]);
+    expect(endedItems).toEqual([]);
+
+    const { data: stillOpen } = await userA.client.from("bills").select("id").is("ended_at", null);
+    expect(stillOpen?.length).toBeGreaterThan(0);
   });
 });
