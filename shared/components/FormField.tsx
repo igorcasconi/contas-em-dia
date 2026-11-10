@@ -1,4 +1,6 @@
-import type { ComponentProps, ReactNode } from "react";
+"use client";
+
+import { type ComponentProps, type ReactNode, useId } from "react";
 
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -18,16 +20,20 @@ type FieldShellProps = {
   children: (controlProps: ControlProps) => ReactNode;
 };
 
-/** Label + controle + dica/erro, com ids de acessibilidade ligados. */
+/**
+ * Label + controle + dica/erro, com ids de acessibilidade ligados.
+ * Ids via useId: rotas anteriores ficam montadas (cacheComponents), então ids derivados de `name` colidiriam.
+ */
 export const FieldShell = ({ label, name, errors, hint, children }: FieldShellProps) => {
-  const errorId = `${name}-error`;
+  const id = useId();
+  const errorId = `${id}-error`;
   const hasError = !!errors?.length;
 
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={name}>{label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       {children({
-        id: name,
+        id,
         name,
         "aria-invalid": hasError,
         "aria-describedby": hasError ? errorId : undefined,
