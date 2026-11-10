@@ -705,8 +705,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: SAL-01
 
 **Done when**:
-- [ ] Integration: sem pagamento atualiza; com pagamento falha; meses anteriores preservados
-- [ ] Gate full; ~3 tests pass
+- [x] Integration: sem pagamento atualiza; com pagamento falha; meses anteriores preservados; escrita direta em `salaries` bloqueada (policies removidas; `complete_onboarding` recriada como security definer)
+- [x] Gate full; 4 tests pass
 
 **Tests**: integration · **Gate**: full
 
@@ -720,8 +720,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: SAL-01, HOME-01
 
 **Done when**:
-- [ ] Unit do schema
-- [ ] Gate quick; ~3 tests pass
+- [x] Unit do schema — `getSalaryForMonth(month)` virou `getCurrentSalary()` (mês calculado após validar sessão, exigência do prerender); `hasAnyPayment` em payments
+- [x] Gate quick; 4 tests pass (+1 `hasAnyPayment`)
 
 **Tests**: unit · **Gate**: quick
 
@@ -735,8 +735,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: SAL-01, HOME-01
 
 **Done when**:
-- [ ] e2e: alterar sem pagamento; cancelar no aviso mantém; após pagar ✏ desabilita; após desfazer reabilita
-- [ ] Gate e2e; ~4 tests pass
+- [x] e2e: alterar sem pagamento; voltar preserva valor; fechar no aviso mantém; após pagar ✏ desabilita; após desfazer reabilita
+- [x] Gate e2e; 2 tests pass (1 fluxo × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
