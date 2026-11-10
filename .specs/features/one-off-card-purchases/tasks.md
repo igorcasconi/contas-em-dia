@@ -111,10 +111,10 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] Válido: trim na descrição, valor "R$ 0,01" → 1
-- [ ] Inválidos: descrição vazia, >100, sem banco, sem tipo, valor 0/vazio (mensagens em pt-BR)
-- [ ] Update exige `id` uuid
-- [ ] Gate: quick — ~8 testes novos passando
+- [x] Válido: trim na descrição, valor "R$ 0,01" → 1
+- [x] Inválidos: descrição vazia, >100, sem banco, sem tipo, valor 0/vazio (mensagens em pt-BR)
+- [x] Update exige `id` uuid
+- [x] Gate: quick — ~8 testes novos passando
 
 **Tests**: unit
 **Gate**: quick

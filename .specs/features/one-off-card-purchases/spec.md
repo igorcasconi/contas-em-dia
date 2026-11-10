@@ -129,7 +129,7 @@ Decisões detalhadas: [context.md](./context.md).
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
 | AVUL-01 | P1: Cadastro — tabela, RLS, mês automático, FKs compostas | In Tasks | Done |
-| AVUL-02 | P1: Cadastro — schema Zod (descrição, banco, tipo, valor) | In Tasks | In Tasks |
+| AVUL-02 | P1: Cadastro — schema Zod (descrição, banco, tipo, valor) | In Tasks | Done |
 | AVUL-03 | P1: Cadastro — página `/avulsos`, item no menu, lista por banco, vazio, SetupRequired | In Tasks | In Tasks |
 | AVUL-04 | P1: Cadastro — criar/editar/excluir (actions + modais) | In Tasks | In Tasks |
 | HOME-01 | P1: Início — avulsos na fatura, badge, ordem, banco só com avulsos | In Tasks | In Tasks |
