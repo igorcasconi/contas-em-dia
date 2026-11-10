@@ -44,3 +44,7 @@ describe("billUpdateSchema", () => {
     expect(result.error?.issues[0].path).toEqual(["id"]);
   });
 });
+
+test("rejects names longer than 100 characters", () => {
+  expect(billSchema.safeParse({ name: "x".repeat(101), categoryId, valueMode: "variable" }).error?.issues[0].path).toEqual(["name"]);
+});

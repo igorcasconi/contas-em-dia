@@ -12,6 +12,14 @@ describe("nameRecordSchema", () => {
   });
 });
 
+describe("name length", () => {
+  test("rejects more than 100 characters", () => {
+    expect(nameRecordSchema.safeParse({ name: "x".repeat(101) }).error?.issues[0].message).toBe(
+      "Use no máximo 100 caracteres",
+    );
+  });
+});
+
 describe("nameRecordUpdateSchema", () => {
   test("requires a valid id", () => {
     expect(nameRecordUpdateSchema.safeParse({ id: "abc", name: "Nubank" }).error?.issues[0].path).toEqual(["id"]);

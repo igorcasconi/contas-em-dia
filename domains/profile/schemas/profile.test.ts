@@ -27,3 +27,7 @@ describe("profileSchema", () => {
     expect(profileSchema.safeParse({ name: "" }).error?.issues[0].message).toBe("Informe seu nome");
   });
 });
+
+test("rejects names longer than 100 characters", () => {
+  expect(onboardingSchema.safeParse({ name: "x".repeat(101), salary: "100" }).error?.issues[0].path).toEqual(["name"]);
+});

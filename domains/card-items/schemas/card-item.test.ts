@@ -44,3 +44,7 @@ describe("cardItemUpdateSchema", () => {
     expect(cardItemUpdateSchema.parse({ ...base, id, alwaysRecurring: "on" }).id).toBe(id);
   });
 });
+
+test("rejects names longer than 100 characters", () => {
+  expect(cardItemSchema.safeParse({ ...base, name: "x".repeat(101), alwaysRecurring: "on" }).error?.issues[0].path).toEqual(["name"]);
+});

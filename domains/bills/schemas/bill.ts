@@ -3,7 +3,7 @@ import { z } from "zod";
 import { moneyField } from "@/shared/utils/money";
 
 const billBase = z.object({
-  name: z.string().trim().min(1, "Informe o nome"),
+  name: z.string().trim().min(1, "Informe o nome").max(100, "Use no máximo 100 caracteres"),
   categoryId: z.uuid("Selecione um tipo"),
 });
 
