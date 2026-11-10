@@ -135,9 +135,9 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] Zod/`isRecordId` antes de `verifySession`; `mutationResult` em todas
-- [ ] Erro P0001 do trigger chega como mensagem (sem mapeamento novo)
-- [ ] Gate: quick (lint + tsc + unit)
+- [x] Zod/`isRecordId` antes de `verifySession`; `mutationResult` em todas
+- [x] Erro P0001 do trigger chega como mensagem (sem mapeamento novo)
+- [x] Gate: quick (lint + tsc + unit)
 
 **Tests**: none (matriz: actions = orquestração fina; coberto por schema unit + integration T1 + e2e T6)
 **Gate**: quick
