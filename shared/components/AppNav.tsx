@@ -1,6 +1,6 @@
 "use client";
 
-import { HouseIcon, RepeatIcon, SettingsIcon } from "lucide-react";
+import { HouseIcon, RepeatIcon, SettingsIcon, ShoppingBagIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,6 +10,7 @@ import { Logo } from "./Logo";
 const NAV_ITEMS = [
   { href: "/", label: "Início", Icon: HouseIcon },
   { href: "/recorrencias", label: "Recorrências", Icon: RepeatIcon },
+  { href: "/avulsos", label: "Avulsos", Icon: ShoppingBagIcon },
   { href: "/configuracoes", label: "Configurações", Icon: SettingsIcon },
 ];
 
@@ -27,7 +28,7 @@ export const BottomNav = () => {
       aria-label="Menu inferior"
       className="fixed inset-x-0 bottom-0 z-40 border-t bg-primary lg:hidden"
     >
-      <ul className="grid grid-cols-3">
+      <ul className="grid grid-cols-4">
         {NAV_ITEMS.map(({ href, label, Icon }) => (
           <li key={href}>
             <Link

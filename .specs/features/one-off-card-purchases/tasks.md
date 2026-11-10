@@ -205,8 +205,8 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] Navegação até `/avulsos` pelo menu do dispositivo (mobile e desktop), `aria-current` correto
-- [ ] Gate: quick + `npx playwright test e2e/nav.spec.ts`
+- [x] Navegação até `/avulsos` pelo menu do dispositivo (mobile e desktop), `aria-current` correto
+- [x] Gate: quick + `npx playwright test e2e/nav.spec.ts`
 
 **Tests**: e2e
 **Gate**: quick + e2e do arquivo

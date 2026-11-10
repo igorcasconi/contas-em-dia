@@ -11,6 +11,11 @@ test("navega entre as seções pelo menu do dispositivo", async ({ page, onboard
 
   await expect(visibleNav.getByRole("link", { name: "Recorrências" })).toHaveAttribute("href", "/recorrencias");
 
+  await visibleNav.getByRole("link", { name: "Avulsos" }).click();
+  await expect(page).toHaveURL(/\/avulsos$/);
+  await expect(page.getByRole("heading", { name: "Avulsos" })).toBeVisible();
+  await expect(visibleNav.getByRole("link", { name: "Avulsos" })).toHaveAttribute("aria-current", "page");
+
   await visibleNav.getByRole("link", { name: "Configurações" }).click();
   await expect(page).toHaveURL(/\/configuracoes$/);
   await expect(page.getByRole("heading", { name: "Configurações" })).toBeVisible();
