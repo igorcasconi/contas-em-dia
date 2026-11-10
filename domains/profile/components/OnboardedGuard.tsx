@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
-
 import { requireOnboarded } from "../services/profile";
 
-/** Renderiza o conteúdo só para usuário com onboarding concluído. Usar dentro de <Suspense>. */
-export const OnboardedGuard = async ({ children }: { children: ReactNode }) => {
+/**
+ * Redireciona ao onboarding quem ainda não concluiu. Renderizado ao lado do conteúdo (dentro de <Suspense>),
+ * não em volta: a página começa a buscar dados em paralelo, sem esperar sessão + perfil.
+ */
+export const OnboardedGuard = async () => {
   await requireOnboarded();
-  return children;
+  return null;
 };

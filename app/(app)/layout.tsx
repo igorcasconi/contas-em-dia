@@ -7,8 +7,9 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
   return (
     <AppShell>
       <Suspense>
-        <OnboardedGuard>{children}</OnboardedGuard>
+        <OnboardedGuard />
       </Suspense>
+      {children}
     </AppShell>
   );
 }
