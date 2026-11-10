@@ -156,6 +156,18 @@ describe("card_purchases", () => {
     expect(openError).toBeNull();
   });
 
+  test("insert on behalf of another user is denied before revealing invoice status", async () => {
+    const { bankId, ids } = await seedBankWithItems(userA, "Sicredi", [{ name: "Plano", amount_cents: 2000 }]);
+    const category = must(await userA.client.from("categories").insert({ name: "Casa" }).select("id").single());
+    must(await userA.client.rpc("pay_card", { p_bank_id: bankId, p_items: [{ card_item_id: ids.Plano, included: true }] }));
+
+    const { error } = await userB.client
+      .from("card_purchases")
+      .insert({ user_id: userA.userId, name: "Sonda", amount_cents: 100, bank_id: bankId, category_id: category.id });
+    expect(error?.code).toBe("42501");
+    expect(error?.message).not.toContain("Sicredi");
+  });
+
   test("blocks deleting bank or category in use", async () => {
     const seed = await seedBank(userA, "XP");
     must(await insertPurchase(userA, seed));

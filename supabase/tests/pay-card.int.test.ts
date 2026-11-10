@@ -175,6 +175,12 @@ describe("pay_card", () => {
       p_items: [],
     });
     expect(selectionError?.code).toBe("42501");
+
+    const { error: invoiceError } = await other.client.rpc("assert_card_invoice_open", {
+      p_user_id: user.userId,
+      p_bank_id: bankId,
+    });
+    expect(invoiceError?.code).toBe("42501");
   });
 
   describe("card purchases", () => {
