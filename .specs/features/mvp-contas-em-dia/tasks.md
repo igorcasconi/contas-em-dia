@@ -688,8 +688,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: HOME-02, UNDO-01
 
 **Done when**:
-- [ ] e2e: não-pagos primeiro; pagar move linha para baixo; expandir banco; desfazer volta a "Não pago"; estado vazio
-- [ ] Gate e2e; ~4 tests pass
+- [x] e2e: não-pagos primeiro; linha paga vai para o fim; expandir banco; desfazer volta a "Não pago"; estado vazio; confirmação mostra nome e valor
+- [x] Gate e2e; 4 tests pass (2 fluxos × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
