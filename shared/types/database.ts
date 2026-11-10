@@ -187,6 +187,9 @@ isOneToOne: false
                            },
 "undo_payment":
 { Args: { "p_payment_id": string }; Returns: undefined
+                           },
+"update_salary":
+{ Args: { "p_amount_cents": number }; Returns: undefined
                            }
           }
           Enums: {
