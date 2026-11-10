@@ -6,9 +6,12 @@ import { cache } from "react";
 import { verifySession } from "@/shared/helpers/session";
 import { createClient } from "@/shared/helpers/supabase/server";
 
-export const getProfile = cache(async (userId: string) => {
+const getProfile = cache(async (userId: string) => {
   const supabase = await createClient();
-  const { data } = await supabase.from("profiles").select("name").eq("id", userId).maybeSingle();
+  const { data, error } = await supabase.from("profiles").select("name").eq("id", userId).maybeSingle();
+
+  // Falha de rede não pode virar "sem perfil" (mandaria quem já tem conta ao onboarding)
+  if (error) throw error;
   return data;
 });
 

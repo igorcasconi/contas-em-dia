@@ -1,9 +1,9 @@
 "use server";
 
-import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { type ActionResult, fromZodError, mapDbError } from "@/shared/helpers/action-result";
+import { mutationResult } from "@/shared/helpers/mutation-result";
 import { verifySession } from "@/shared/helpers/session";
 import { createClient } from "@/shared/helpers/supabase/server";
 
@@ -36,8 +36,5 @@ export const updateNameAction = async (_state: ActionResult | null, formData: Fo
   const supabase = await createClient();
   const { error } = await supabase.from("profiles").update({ name: parsed.data.name }).eq("id", userId);
 
-  if (error) return { ok: false, error: mapDbError(error) };
-
-  refresh();
-  return { ok: true, data: undefined };
+  return mutationResult(error);
 };

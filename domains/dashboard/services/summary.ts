@@ -12,7 +12,6 @@ export const getMonthSummary = async () => {
 
   return {
     salaryCents,
-    paidCents,
     leftoverCents: computeLeftover(salaryCents, paidCents),
     hasPayments: hasAnyPayment(rows),
   };

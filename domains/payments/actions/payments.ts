@@ -1,9 +1,8 @@
 "use server";
 
-import { z } from "zod";
-
 import { type ActionResult, fromZodError } from "@/shared/helpers/action-result";
 import { mutationResult } from "@/shared/helpers/mutation-result";
+import { INVALID_RECORD, isRecordId } from "@/shared/helpers/record-id";
 import { verifySession } from "@/shared/helpers/session";
 import { createClient } from "@/shared/helpers/supabase/server";
 
@@ -36,7 +35,7 @@ export const payCardAction = async (input: PayCardInput) => {
 };
 
 export const undoPaymentAction = async (paymentId: string) => {
-  if (!z.uuid().safeParse(paymentId).success) return { ok: false, error: "Pagamento inválido." } satisfies ActionResult;
+  if (!isRecordId(paymentId)) return INVALID_RECORD;
 
   await verifySession();
   const supabase = await createClient();

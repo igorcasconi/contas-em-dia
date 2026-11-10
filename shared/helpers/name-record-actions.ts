@@ -2,6 +2,8 @@ import "server-only";
 
 import { fromZodError } from "./action-result";
 import { mutationResult } from "./mutation-result";
+import { unwrap } from "./query-result";
+import { INVALID_RECORD, isRecordId } from "./record-id";
 import { nameRecordSchema, nameRecordUpdateSchema } from "./name-record";
 import { verifySession } from "./session";
 import { createClient } from "./supabase/server";
@@ -11,8 +13,7 @@ type NameRecordTable = "categories" | "banks";
 export const listNameRecords = async (table: NameRecordTable) => {
   await verifySession();
   const supabase = await createClient();
-  const { data } = await supabase.from(table).select("id, name").order("name");
-  return data ?? [];
+  return unwrap(await supabase.from(table).select("id, name").order("name"));
 };
 
 export const createNameRecord = async (table: NameRecordTable, formData: FormData) => {
@@ -36,6 +37,8 @@ export const updateNameRecord = async (table: NameRecordTable, formData: FormDat
 };
 
 export const deleteNameRecord = async (table: NameRecordTable, id: string) => {
+  if (!isRecordId(id)) return INVALID_RECORD;
+
   await verifySession();
   const supabase = await createClient();
   const { error } = await supabase.from(table).delete().eq("id", id);
