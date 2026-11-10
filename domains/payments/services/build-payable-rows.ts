@@ -130,3 +130,6 @@ export const buildPayableRows = (sources: PayableSources) =>
 
 export const sumPaid = (rows: PayableRow[]) =>
   rows.reduce((total, row) => (row.paymentId ? total + (row.amountCents ?? 0) : total), 0);
+
+/** Algum pagamento registrado no mês (trava a alteração de salário). */
+export const hasAnyPayment = (rows: PayableRow[]) => rows.some(({ paymentId }) => paymentId);

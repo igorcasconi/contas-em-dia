@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { type PayableSources, buildPayableRows, sumPaid } from "./build-payable-rows";
+import { type PayableSources, buildPayableRows, hasAnyPayment, sumPaid } from "./build-payable-rows";
 
 const empty: PayableSources = { bills: [], cardItems: [], banks: [], payments: [] };
 
@@ -118,5 +118,19 @@ describe("sumPaid", () => {
     });
 
     expect(sumPaid(rows)).toBe(2500);
+  });
+});
+
+describe("hasAnyPayment", () => {
+  test("false without payments, true with any", () => {
+    const unpaid = buildPayableRows({ ...empty, bills: [bill("A")] });
+    const paid = buildPayableRows({
+      ...empty,
+      bills: [bill("A")],
+      payments: [{ id: "p", kind: "bill", bill_id: "A", bank_id: null, total_cents: 1000, items: [] }],
+    });
+
+    expect(hasAnyPayment(unpaid)).toBe(false);
+    expect(hasAnyPayment(paid)).toBe(true);
   });
 });
