@@ -13,7 +13,7 @@ export default function OnboardingPage() {
   return (
     <CenteredLayout>
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">Bem-vindo! 👋</h1>
+        <h1 className="font-heading text-2xl font-semibold">Bem-vindo! 👋</h1>
         <p className="text-muted-foreground">Vamos configurar sua conta</p>
       </div>
       <Suspense>

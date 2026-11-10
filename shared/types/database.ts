@@ -65,6 +65,32 @@ isOneToOne: false
       referencedColumns: ["id","user_id"]
     }
                   ]
+                },"card_purchases": {
+                  Row: {
+                    "amount_cents": number,"bank_id": string,"category_id": string,"created_at": string,"id": string,"month": string,"name": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_cents": number,"bank_id": string,"category_id": string,"created_at"?: string,"id"?: string,"month"?: string,"name": string,"user_id"?: string
+                  }
+                  Update: {
+                    "amount_cents"?: number,"bank_id"?: string,"category_id"?: string,"created_at"?: string,"id"?: string,"month"?: string,"name"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "card_purchases_bank_fkey"
+      columns: ["bank_id","user_id"]
+isOneToOne: false
+      referencedRelation: "banks"
+      referencedColumns: ["id","user_id"]
+    },{
+      foreignKeyName: "card_purchases_category_fkey"
+      columns: ["category_id","user_id"]
+isOneToOne: false
+      referencedRelation: "categories"
+      referencedColumns: ["id","user_id"]
+    }
+                  ]
                 },"categories": {
                   Row: {
                     "created_at": string,"id": string,"name": string,"user_id": string
@@ -165,7 +191,10 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "card_selection":
+            "assert_card_invoice_open":
+{ Args: { "p_bank_id": string,"p_user_id": string }; Returns: undefined
+                           },
+"card_selection":
 { Args: { "p_bank_id": string,"p_items": Json,"p_user_id": string }; Returns: {
               "amount_cents": number,"card_item_id": string,"ended_at": string,"included": boolean,"pause": boolean,"remaining_months": number,"status": string
             }[]

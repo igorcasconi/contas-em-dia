@@ -5,7 +5,13 @@ import { useState } from "react";
 
 import { SelectField } from "@/shared/components/SelectField";
 import { Button } from "@/shared/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shared/components/ui/dialog";
 
 import type { ActionResult } from "@/shared/helpers/action-result";
 
@@ -28,7 +34,10 @@ type AddPaymentDialogProps = {
 };
 
 /** Botão + modal para registrar um pagamento do mês. */
-export const AddPaymentDialog = ({ rows, removeCardItemAction }: AddPaymentDialogProps) => {
+export const AddPaymentDialog = ({
+  rows,
+  removeCardItemAction,
+}: AddPaymentDialogProps) => {
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<PaymentKind>();
 
@@ -44,7 +53,7 @@ export const AddPaymentDialog = ({ rows, removeCardItemAction }: AddPaymentDialo
   return (
     <Dialog open={open} onOpenChange={changeOpen}>
       <DialogTrigger asChild>
-        <Button size="lg" className="w-full lg:w-auto">
+        <Button size="lg" className="w-full lg:w-auto cursor-pointer">
           <PlusIcon aria-hidden />
           Adicionar pagamento
         </Button>
@@ -60,7 +69,12 @@ export const AddPaymentDialog = ({ rows, removeCardItemAction }: AddPaymentDialo
           onValueChange={(value) => setKind(value as PaymentKind)}
           options={KIND_OPTIONS}
         />
-        {kind === "bill" && <BillPaymentForm bills={pendingBills} onDone={() => changeOpen(false)} />}
+        {kind === "bill" && (
+          <BillPaymentForm
+            bills={pendingBills}
+            onDone={() => changeOpen(false)}
+          />
+        )}
         {kind === "card" && (
           <CardPaymentForm
             banks={pendingCards}

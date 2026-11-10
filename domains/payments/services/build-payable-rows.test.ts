@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { type PayableSources, buildPayableRows, hasAnyPayment, pendingOnly, sumPaid } from "./build-payable-rows";
 
-const empty: PayableSources = { bills: [], cardItems: [], banks: [], payments: [] };
+const empty: PayableSources = { bills: [], cardItems: [], cardPurchases: [], banks: [], payments: [] };
 
 const bill = (id: string, overrides: Partial<PayableSources["bills"][number]> = {}) => ({
   id,
@@ -21,6 +21,13 @@ const cardItem = (id: string, bankId: string, overrides: Partial<PayableSources[
   remaining_months: null,
   status: "active",
   ...overrides,
+});
+
+const purchase = (id: string, bankId: string, amountCents = 1000) => ({
+  id,
+  name: id,
+  bank_id: bankId,
+  amount_cents: amountCents,
 });
 
 describe("buildPayableRows", () => {
@@ -84,7 +91,7 @@ describe("buildPayableRows", () => {
       name: "Itaú",
       amountCents: 15000,
       paymentId: "p2",
-      items: [{ id: "Celular", name: "Celular", amountCents: 15000, remainingMonths: 1, status: "active" }],
+      items: [{ id: "Celular", name: "Celular", amountCents: 15000, remainingMonths: 1, status: "active", purchase: false }],
     });
   });
 
@@ -106,6 +113,89 @@ describe("buildPayableRows", () => {
     });
 
     expect(rows).toEqual([expect.objectContaining({ id: "c6", amountCents: 0 })]);
+  });
+});
+
+describe("buildPayableRows with card purchases", () => {
+  test("unpaid bank total sums active items and purchases; purchases listed after recurring items", () => {
+    const rows = buildPayableRows({
+      ...empty,
+      banks: [{ id: "nu", name: "Nubank" }],
+      cardItems: [
+        cardItem("Netflix", "nu", { amount_cents: 5000 }),
+        cardItem("Disney", "nu", { amount_cents: 3000, status: "paused" }),
+      ],
+      cardPurchases: [purchase("Farmácia", "nu", 4590), purchase("Almoço", "nu", 3000)],
+    });
+
+    expect(rows).toEqual([expect.objectContaining({ id: "nu", amountCents: 12590, paymentId: null })]);
+    expect(rows[0].kind === "card" && rows[0].items.map(({ name, purchase }) => [name, purchase])).toEqual([
+      ["Disney", false],
+      ["Netflix", false],
+      ["Almoço", true],
+      ["Farmácia", true],
+    ]);
+  });
+
+  test("bank with only purchases gets a row and is pending", () => {
+    const rows = buildPayableRows({
+      ...empty,
+      banks: [{ id: "c6", name: "C6" }, { id: "vazio", name: "Sem itens" }],
+      cardPurchases: [purchase("Mercado", "c6", 8000)],
+    });
+
+    expect(rows).toEqual([
+      {
+        kind: "card",
+        id: "c6",
+        name: "C6",
+        amountCents: 8000,
+        paymentId: null,
+        items: [{ id: "Mercado", name: "Mercado", amountCents: 8000, remainingMonths: null, status: "active", purchase: true }],
+      },
+    ]);
+    expect(pendingOnly(rows).map(({ id }) => id)).toEqual(["c6"]);
+  });
+
+  test("purchases of another bank are not included", () => {
+    const rows = buildPayableRows({
+      ...empty,
+      banks: [{ id: "nu", name: "Nubank" }, { id: "itau", name: "Itaú" }],
+      cardItems: [cardItem("Netflix", "nu", { amount_cents: 5000 })],
+      cardPurchases: [purchase("Mercado", "itau", 8000)],
+    });
+
+    const nubank = rows.find(({ id }) => id === "nu");
+    expect(nubank).toEqual(expect.objectContaining({ amountCents: 5000 }));
+    expect(nubank?.kind === "card" && nubank.items.map(({ name }) => name)).toEqual(["Netflix"]);
+  });
+
+  test("paid bank lists included snapshot items followed by bank purchases", () => {
+    const rows = buildPayableRows({
+      ...empty,
+      banks: [{ id: "itau", name: "Itaú" }],
+      cardPurchases: [purchase("Mercado", "itau", 3000), purchase("Outro banco", "nu", 999)],
+      payments: [
+        {
+          id: "p2",
+          kind: "card",
+          bill_id: null,
+          bank_id: "itau",
+          total_cents: 8000,
+          items: [
+            { card_item_id: "Seguro", included: true, amount_cents: 5000, prev_remaining_months: null, prev_status: "active", card_item: { name: "Seguro" } },
+          ],
+        },
+      ],
+    });
+
+    expect(rows).toEqual([
+      expect.objectContaining({ id: "itau", amountCents: 8000, paymentId: "p2" }),
+    ]);
+    expect(rows[0].kind === "card" && rows[0].items.map(({ name, purchase }) => [name, purchase])).toEqual([
+      ["Seguro", false],
+      ["Mercado", true],
+    ]);
   });
 });
 

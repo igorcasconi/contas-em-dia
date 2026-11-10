@@ -13,6 +13,7 @@ import { Checkbox } from "@/shared/components/ui/checkbox";
 import type { ActionResult } from "@/shared/helpers/action-result";
 import { callAction } from "@/shared/helpers/call-action";
 import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
+import { toSelectOptions } from "@/shared/utils/select-options";
 
 import { payCardAction } from "../actions/payments";
 import type { PayableItem, PayableRow } from "../services/build-payable-rows";
@@ -23,7 +24,10 @@ type Choice = { included: boolean; pause: boolean };
 
 const isInstallment = (item: PayableItem) => item.remainingMonths !== null;
 
-/** Ativo marcado; pausado desmarcado; parcelado sempre marcado. */
+/** Parcela e avulso: sempre incluídos, sem pausar/remover. */
+const isLocked = (item: PayableItem) => isInstallment(item) || item.purchase;
+
+/** Ativo marcado; pausado desmarcado; parcelado e avulso sempre marcados. */
 const initialChoice = (item: PayableItem): Choice => ({ included: item.status === "active", pause: false });
 
 type ChecklistItemProps = {
@@ -35,25 +39,29 @@ type ChecklistItemProps = {
 
 const ChecklistItem = ({ item, choice, onChange, onRemove }: ChecklistItemProps) => {
   const checkboxId = `card-item-${item.id}`;
-  const installment = isInstallment(item);
+  const locked = isLocked(item);
 
   return (
     <li className="flex items-center gap-3 py-2">
       <Checkbox
         id={checkboxId}
         checked={choice.included}
-        disabled={installment}
+        disabled={locked}
         onCheckedChange={(checked) => onChange({ included: checked === true, pause: false })}
       />
       <label htmlFor={checkboxId} className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-sm">
         {item.name}
         {item.status === "paused" && !choice.included && <Badge variant="outline">Pausado</Badge>}
         {choice.pause && <Badge variant="outline">Será pausado</Badge>}
+        {item.purchase && <Badge variant="outline">Avulso</Badge>}
       </label>
       <MoneyText cents={item.amountCents} className="text-sm" />
-      {installment ? (
-        <span className="flex size-9 items-center justify-center text-muted-foreground" title="Parcela: não pode ser removida da fatura">
-          <LockIcon className="size-4" aria-label="Parcela" />
+      {locked ? (
+        <span
+          className="flex size-9 items-center justify-center text-muted-foreground"
+          title={item.purchase ? "Avulso: sempre incluído na fatura" : "Parcela: não pode ser removida da fatura"}
+        >
+          <LockIcon className="size-4" aria-label={item.purchase ? "Avulso" : "Parcela"} />
         </span>
       ) : (
         <span className="flex">
@@ -103,7 +111,11 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
 
     startPayment(async () => {
       const result = await callAction(() =>
-        payCardAction({ bankId, items: items.map((item) => ({ cardItemId: item.id, ...choiceOf(item) })) }),
+        payCardAction({
+          bankId,
+          // Avulsos não vão no payload: pay_card soma os do banco/mês lidos do servidor
+          items: items.filter(({ purchase }) => !purchase).map((item) => ({ cardItemId: item.id, ...choiceOf(item) })),
+        }),
       );
       if (result.ok) onDone();
       else setError(result.error);
@@ -121,7 +133,7 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
           setChoices({});
           setError(undefined);
         }}
-        options={banks.map(({ id, name }) => ({ value: id, label: name }))}
+        options={toSelectOptions(banks)}
       />
 
       {bankId && (

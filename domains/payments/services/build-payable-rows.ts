@@ -15,6 +15,13 @@ type CardItemSource = {
   status: string;
 };
 
+type CardPurchaseSource = {
+  id: string;
+  name: string;
+  bank_id: string;
+  amount_cents: number;
+};
+
 type PaymentSource = {
   id: string;
   kind: string;
@@ -31,10 +38,11 @@ type PaymentSource = {
   }[];
 };
 
-/** Registros do mês: todos os boletos, itens de cartão abertos, bancos e pagamentos do mês. */
+/** Registros do mês: todos os boletos, itens de cartão abertos, avulsos, bancos e pagamentos do mês. */
 export type PayableSources = {
   bills: BillSource[];
   cardItems: CardItemSource[];
+  cardPurchases: CardPurchaseSource[];
   banks: { id: string; name: string }[];
   payments: PaymentSource[];
 };
@@ -45,6 +53,8 @@ export type PayableItem = {
   amountCents: number;
   remainingMonths: number | null;
   status: string;
+  /** true = compra avulsa do mês */
+  purchase: boolean;
 };
 
 export type PayableRow =
@@ -87,9 +97,20 @@ const toBillRows = ({ bills, payments }: PayableSources): PayableRow[] =>
     };
   });
 
-const toCardRows = ({ banks, cardItems, payments }: PayableSources): PayableRow[] =>
+const toPurchaseItems = (purchases: CardPurchaseSource[]): PayableItem[] =>
+  purchases.toSorted(byName).map((purchase) => ({
+    id: purchase.id,
+    name: purchase.name,
+    amountCents: purchase.amount_cents,
+    remainingMonths: null,
+    status: "active",
+    purchase: true,
+  }));
+
+const toCardRows = ({ banks, cardItems, cardPurchases, payments }: PayableSources): PayableRow[] =>
   banks.flatMap((bank) => {
     const payment = payments.find(({ kind, bank_id }) => kind === "card" && bank_id === bank.id);
+    const purchases = cardPurchases.filter(({ bank_id }) => bank_id === bank.id);
 
     if (payment) {
       const items = payment.items
@@ -100,28 +121,41 @@ const toCardRows = ({ banks, cardItems, payments }: PayableSources): PayableRow[
           amountCents: item.amount_cents,
           remainingMonths: item.prev_remaining_months,
           status: item.prev_status,
+          purchase: false,
         }));
-      return { kind: "card", id: bank.id, name: bank.name, amountCents: payment.total_cents, paymentId: payment.id, items };
+      return {
+        kind: "card",
+        id: bank.id,
+        name: bank.name,
+        amountCents: payment.total_cents,
+        paymentId: payment.id,
+        items: [...items, ...toPurchaseItems(purchases)],
+      };
     }
 
     const openItems = cardItems.filter(({ bank_id }) => bank_id === bank.id).sort(byName);
-    if (!openItems.length) return [];
+    if (!openItems.length && !purchases.length) return [];
 
     return {
       kind: "card",
       id: bank.id,
       name: bank.name,
-      amountCents: openItems
-        .filter(({ status }) => status === "active")
-        .reduce((total, { amount_cents }) => total + amount_cents, 0),
+      amountCents: [...openItems.filter(({ status }) => status === "active"), ...purchases].reduce(
+        (total, { amount_cents }) => total + amount_cents,
+        0,
+      ),
       paymentId: null,
-      items: openItems.map((item) => ({
-        id: item.id,
-        name: item.name,
-        amountCents: item.amount_cents,
-        remainingMonths: item.remaining_months,
-        status: item.status,
-      })),
+      items: [
+        ...openItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+          amountCents: item.amount_cents,
+          remainingMonths: item.remaining_months,
+          status: item.status,
+          purchase: false,
+        })),
+        ...toPurchaseItems(purchases),
+      ],
     };
   });
 

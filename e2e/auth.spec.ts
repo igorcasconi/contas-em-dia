@@ -40,7 +40,7 @@ test.describe("login", () => {
 
 test.describe("rotas protegidas", () => {
   test("redireciona anônimo para o login", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/recorrencias");
     await expect(page).toHaveURL(/\/login$/);
   });
 });

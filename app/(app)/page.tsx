@@ -17,7 +17,9 @@ import { currentMonth, formatMonth } from "@/shared/utils/month";
 
 const Greeting = async () => {
   const { name } = await requireOnboarded();
-  return <PageHeader title={`Olá, ${name}`} aside={formatMonth(currentMonth())} />;
+  return (
+    <PageHeader title={`Olá, ${name}`} aside={formatMonth(currentMonth())} />
+  );
 };
 
 const Summary = async () => {
@@ -25,17 +27,19 @@ const Summary = async () => {
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      <SalaryCard salaryCents={salaryCents} locked={hasPayments} monthLabel={formatMonth(currentMonth())} />
+      <SalaryCard
+        salaryCents={salaryCents}
+        locked={hasPayments}
+        monthLabel={formatMonth(currentMonth())}
+      />
       <LeftoverCard leftoverCents={leftoverCents} />
     </div>
   );
 };
 
-const AddPayment = async () => (
-  <AddPaymentDialog rows={await getMonthPayables()} removeCardItemAction={endCardItemAction} />
+const MonthPayables = async () => (
+  <PayableList rows={await getMonthPayables()} />
 );
-
-const MonthPayables = async () => <PayableList rows={await getMonthPayables()} />;
 
 const Charts = async () => {
   const { year, months, banks } = await getChartData();
@@ -67,11 +71,12 @@ export default function HomePage() {
       <Suspense fallback={<Skeleton className="h-24" />}>
         <Summary />
       </Suspense>
-      <Suspense fallback={<Skeleton className="h-10" />}>
-        <AddPayment />
-      </Suspense>
+
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
-        <section aria-labelledby="month-payables" className="flex flex-col gap-3">
+        <section
+          aria-labelledby="month-payables"
+          className="flex flex-col gap-3"
+        >
           <h2 id="month-payables" className="font-medium">
             Pagamentos do mês
           </h2>
