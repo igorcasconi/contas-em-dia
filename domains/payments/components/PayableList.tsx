@@ -1,6 +1,11 @@
 "use client";
 
-import { ChevronDownIcon, CircleCheckIcon, CircleIcon, Undo2Icon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  CircleCheckIcon,
+  CircleIcon,
+  Undo2Icon,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -18,12 +23,19 @@ import { undoPaymentAction } from "../actions/payments";
 import type { PayableItem, PayableRow } from "../services/build-payable-rows";
 
 const CardItems = ({ id, items }: { id: string; items: PayableItem[] }) => (
-  <ul id={id} className="flex flex-col gap-1 border-l pl-3 text-sm text-muted-foreground">
+  <ul
+    id={id}
+    className="flex flex-col gap-1 border-l pl-3 text-sm text-muted-foreground"
+  >
     {items.map((item) => (
       <li key={item.id} className="flex items-center justify-between gap-2">
         <span className="flex flex-wrap items-center gap-2">
           {item.name}
-          {item.remainingMonths !== null && <Badge variant="outline">{formatRemainingMonths(item.remainingMonths)}</Badge>}
+          {item.remainingMonths !== null && (
+            <Badge variant="outline">
+              {formatRemainingMonths(item.remainingMonths)}
+            </Badge>
+          )}
           {item.status === "paused" && <Badge variant="outline">Pausado</Badge>}
         </span>
         <MoneyText cents={item.amountCents} />
@@ -43,7 +55,13 @@ const PayableRowItem = ({ row, onUndo }: PayableRowItemProps) => {
   return (
     <li className="flex flex-col gap-2 py-3 pr-1 pl-4">
       <div className="flex items-center gap-3">
-        <StatusIcon className={cn("size-4 shrink-0", paid ? "text-primary" : "text-muted-foreground")} aria-hidden />
+        <StatusIcon
+          className={cn(
+            "size-4 shrink-0",
+            paid ? "text-green-500" : "text-muted-foreground",
+          )}
+          aria-hidden
+        />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="font-medium">{row.name}</span>
           <span className="flex items-center gap-2 text-sm">
@@ -52,7 +70,9 @@ const PayableRowItem = ({ row, onUndo }: PayableRowItemProps) => {
             ) : (
               <MoneyText cents={row.amountCents} />
             )}
-            <Badge variant={paid ? "default" : "outline"}>{paid ? "Pago" : "Não pago"}</Badge>
+            <Badge variant={paid ? "default" : "destructive"}>
+              {paid ? "Pago" : "Não pago"}
+            </Badge>
           </span>
         </div>
         {row.kind === "card" && (
@@ -64,16 +84,26 @@ const PayableRowItem = ({ row, onUndo }: PayableRowItemProps) => {
             aria-controls={itemsId}
             onClick={() => setExpanded(!expanded)}
           >
-            <ChevronDownIcon className={cn("transition-transform", expanded && "rotate-180")} aria-hidden />
+            <ChevronDownIcon
+              className={cn("transition-transform", expanded && "rotate-180")}
+              aria-hidden
+            />
           </Button>
         )}
         {paid && (
-          <Button variant="ghost" size="icon-lg" aria-label={`Desfazer pagamento de ${row.name}`} onClick={onUndo}>
+          <Button
+            variant="ghost"
+            size="icon-lg"
+            aria-label={`Desfazer pagamento de ${row.name}`}
+            onClick={onUndo}
+          >
             <Undo2Icon aria-hidden />
           </Button>
         )}
       </div>
-      {row.kind === "card" && expanded && <CardItems id={itemsId} items={row.items} />}
+      {row.kind === "card" && expanded && (
+        <CardItems id={itemsId} items={row.items} />
+      )}
     </li>
   );
 };
@@ -106,7 +136,9 @@ export const PayableList = ({ rows }: { rows: PayableRow[] }) => {
           <PayableRowItem
             key={`${row.kind}-${row.id}`}
             row={row}
-            onUndo={() => row.paymentId && undo.askRemove({ id: row.paymentId, row })}
+            onUndo={() =>
+              row.paymentId && undo.askRemove({ id: row.paymentId, row })
+            }
           />
         ))}
       </ul>
