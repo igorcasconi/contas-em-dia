@@ -9,6 +9,7 @@ import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
 
 import { endCardItemAction } from "../actions/card-items";
 import type { ActiveCardItem, CardItemGroup } from "../services/card-items";
+import { removeCardItemCopy } from "../services/removal-copy";
 import { CardItemFormModal } from "./CardItemFormModal";
 import { CardItemStatusBadge } from "./CardItemStatusBadge";
 
@@ -72,9 +73,7 @@ export const CardItemList = ({ groups, categories, banks }: CardItemListProps) =
       <ConfirmDialog
         open={!!dialogs.removing}
         onOpenChange={(open) => !open && dialogs.cancelRemove()}
-        title="Remover item do cartão?"
-        description={`"${dialogs.removing?.name}" deixará de aparecer nas próximas faturas. Pagamentos anteriores continuam no histórico.`}
-        confirmLabel="Remover"
+        {...removeCardItemCopy(dialogs.removing?.name)}
         destructive
         pending={dialogs.removePending}
         error={dialogs.removeError}

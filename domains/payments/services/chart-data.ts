@@ -27,3 +27,5 @@ export const toBankTotals = (rows: PayableRow[]) =>
   rows
     .flatMap((row) => (row.kind === "card" && row.paymentId ? [{ bankId: row.id, name: row.name, totalCents: row.amountCents }] : []))
     .sort((a, b) => b.totalCents - a.totalCents);
+
+export type BankTotal = ReturnType<typeof toBankTotals>[number];

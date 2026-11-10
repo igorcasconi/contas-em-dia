@@ -2,10 +2,9 @@
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
+import type { MonthTotal } from "@/domains/payments/services/chart-data";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/components/ui/chart";
 import { formatBRL } from "@/shared/utils/money";
-
-type MonthTotal = { month: string; label: string; totalCents: number | null };
 
 const chartConfig = {
   totalCents: { label: "Total pago", color: "var(--chart-2)" },

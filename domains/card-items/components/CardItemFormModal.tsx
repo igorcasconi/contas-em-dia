@@ -25,6 +25,16 @@ type CardItemFormModalProps = {
 
 const toOptions = (records: Option[]) => records.map(({ id, name }) => ({ value: id, label: name }));
 
+/** Cadastro prévio que falta (tipo, depois banco), ou undefined. */
+const missingSetupFor = (categories: Option[], banks: Option[]) => {
+  if (!categories.length) {
+    return { message: "Cadastre um tipo antes de criar itens do cartão.", href: "/configuracoes/tipos", linkLabel: "Cadastrar tipo" };
+  }
+  if (!banks.length) {
+    return { message: "Cadastre um banco antes de criar itens do cartão.", href: "/configuracoes/bancos", linkLabel: "Cadastrar banco" };
+  }
+};
+
 export const CardItemFormModal = ({ item, categories, banks, onClose }: CardItemFormModalProps) => {
   const [alwaysRecurring, setAlwaysRecurring] = useState(item ? item.remaining_months === null : true);
   const { formAction, pending, fieldErrors, error } = useFormAction(
@@ -32,9 +42,7 @@ export const CardItemFormModal = ({ item, categories, banks, onClose }: CardItem
     onClose,
   );
 
-  const missingSetup = !categories.length
-    ? { message: "Cadastre um tipo antes de criar itens do cartão.", href: "/configuracoes/tipos", linkLabel: "Cadastrar tipo" }
-    : !banks.length && { message: "Cadastre um banco antes de criar itens do cartão.", href: "/configuracoes/bancos", linkLabel: "Cadastrar banco" };
+  const missingSetup = missingSetupFor(categories, banks);
 
   return (
     <FormModal

@@ -133,3 +133,6 @@ export const sumPaid = (rows: PayableRow[]) =>
 
 /** Algum pagamento registrado no mês (trava a alteração de salário). */
 export const hasAnyPayment = (rows: PayableRow[]) => rows.some(({ paymentId }) => paymentId);
+
+/** Linhas ainda não pagas no mês (opções do modal de pagamento). */
+export const pendingOnly = (rows: PayableRow[]) => rows.filter(({ paymentId }) => !paymentId);

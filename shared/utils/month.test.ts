@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { currentMonth, formatMonth, formatMonthShort } from "./month";
+import { currentMonth, formatMonth, formatMonthShort, formatRemainingMonths } from "./month";
 
 describe("currentMonth", () => {
   test("returns first day of month in São Paulo", () => {
@@ -28,5 +28,14 @@ describe("formatMonth", () => {
 describe("formatMonthShort", () => {
   test("returns month abbreviation", () => {
     expect(formatMonthShort("2026-03-01")).toBe("Mar");
+  });
+});
+
+describe("formatRemainingMonths", () => {
+  test.each([
+    [1, "1 mês restante"],
+    [3, "3 meses restantes"],
+  ])("%i → %s", (months, expected) => {
+    expect(formatRemainingMonths(months)).toBe(expected);
   });
 });

@@ -16,3 +16,7 @@ export const formatMonthShort = (month: string) => MONTH_LABELS[Number(month.spl
 
 /** `2026-03-01` → `Mar/2026` */
 export const formatMonth = (month: string) => `${formatMonthShort(month)}/${month.split("-")[0]}`;
+
+/** `1` → `1 mês restante`; `3` → `3 meses restantes` */
+export const formatRemainingMonths = (months: number) =>
+  months === 1 ? "1 mês restante" : `${months} meses restantes`;

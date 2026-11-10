@@ -3,6 +3,7 @@
 import { LockIcon, PauseIcon, Trash2Icon } from "lucide-react";
 import { type FormEvent, useState, useTransition } from "react";
 
+import { removeCardItemCopy } from "@/domains/card-items/services/removal-copy";
 import { ConfirmDialog } from "@/shared/components/ConfirmDialog";
 import { MoneyText } from "@/shared/components/MoneyText";
 import { SelectField } from "@/shared/components/SelectField";
@@ -145,9 +146,7 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
       <ConfirmDialog
         open={!!removal.removing}
         onOpenChange={(open) => !open && removal.cancelRemove()}
-        title="Remover item do cartão?"
-        description={`"${removal.removing?.name}" deixará de aparecer nas próximas faturas. Pagamentos anteriores continuam no histórico.`}
-        confirmLabel="Remover"
+        {...removeCardItemCopy(removal.removing?.name)}
         destructive
         pending={removal.removePending}
         error={removal.removeError}

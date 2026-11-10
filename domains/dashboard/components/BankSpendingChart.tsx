@@ -2,11 +2,10 @@
 
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
+import type { BankTotal } from "@/domains/payments/services/chart-data";
 import { EmptyState } from "@/shared/components/EmptyState";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/shared/components/ui/chart";
 import { formatBRL } from "@/shared/utils/money";
-
-type BankTotal = { bankId: string; name: string; totalCents: number };
 
 const chartConfig = {
   totalCents: { label: "Pago", color: "var(--chart-3)" },

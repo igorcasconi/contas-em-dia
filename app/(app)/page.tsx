@@ -31,15 +31,9 @@ const Summary = async () => {
   );
 };
 
-const AddPayment = async () => {
-  const rows = await getMonthPayables();
-  return (
-    <AddPaymentDialog
-      pendingRows={rows.filter(({ paymentId }) => !paymentId)}
-      removeCardItemAction={endCardItemAction}
-    />
-  );
-};
+const AddPayment = async () => (
+  <AddPaymentDialog rows={await getMonthPayables()} removeCardItemAction={endCardItemAction} />
+);
 
 const MonthPayables = async () => <PayableList rows={await getMonthPayables()} />;
 

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { type PayableSources, buildPayableRows, hasAnyPayment, sumPaid } from "./build-payable-rows";
+import { type PayableSources, buildPayableRows, hasAnyPayment, pendingOnly, sumPaid } from "./build-payable-rows";
 
 const empty: PayableSources = { bills: [], cardItems: [], banks: [], payments: [] };
 
@@ -132,5 +132,17 @@ describe("hasAnyPayment", () => {
 
     expect(hasAnyPayment(unpaid)).toBe(false);
     expect(hasAnyPayment(paid)).toBe(true);
+  });
+});
+
+describe("pendingOnly", () => {
+  test("keeps only rows without payment", () => {
+    const rows = buildPayableRows({
+      ...empty,
+      bills: [bill("A"), bill("B")],
+      payments: [{ id: "p", kind: "bill", bill_id: "B", bank_id: null, total_cents: 1000, items: [] }],
+    });
+
+    expect(pendingOnly(rows).map(({ name }) => name)).toEqual(["A"]);
   });
 });

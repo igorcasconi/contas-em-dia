@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 import type { ActionResult } from "@/shared/helpers/action-result";
 
-import type { PayableRow } from "../services/build-payable-rows";
+import { type PayableRow, pendingOnly } from "../services/build-payable-rows";
 import { BillPaymentForm } from "./BillPaymentForm";
 import { CardPaymentForm } from "./CardPaymentForm";
 
@@ -21,14 +21,14 @@ const KIND_OPTIONS = [
 ];
 
 type AddPaymentDialogProps = {
-  /** Linhas do mês ainda não pagas. */
-  pendingRows: PayableRow[];
+  /** Linhas do mês; o modal oferece só as ainda não pagas. */
+  rows: PayableRow[];
   /** Encerra um item recorrente do cartão (domínio card-items, injetado pela página). */
   removeCardItemAction: (id: string) => Promise<ActionResult>;
 };
 
 /** Botão + modal para registrar um pagamento do mês. */
-export const AddPaymentDialog = ({ pendingRows, removeCardItemAction }: AddPaymentDialogProps) => {
+export const AddPaymentDialog = ({ rows, removeCardItemAction }: AddPaymentDialogProps) => {
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<PaymentKind>();
 
@@ -37,6 +37,7 @@ export const AddPaymentDialog = ({ pendingRows, removeCardItemAction }: AddPayme
     if (!next) setKind(undefined);
   };
 
+  const pendingRows = pendingOnly(rows);
   const pendingBills = pendingRows.filter((row) => row.kind === "bill");
   const pendingCards = pendingRows.filter((row) => row.kind === "card");
 

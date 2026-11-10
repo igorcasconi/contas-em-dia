@@ -12,11 +12,10 @@ import { Button } from "@/shared/components/ui/button";
 import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
 import { cn } from "@/shared/utils/cn";
 import { formatBRL } from "@/shared/utils/money";
+import { formatRemainingMonths } from "@/shared/utils/month";
 
 import { undoPaymentAction } from "../actions/payments";
 import type { PayableItem, PayableRow } from "../services/build-payable-rows";
-
-const remainingLabel = (months: number) => (months === 1 ? "1 mês restante" : `${months} meses restantes`);
 
 const CardItems = ({ id, items }: { id: string; items: PayableItem[] }) => (
   <ul id={id} className="flex flex-col gap-1 border-l pl-3 text-sm text-muted-foreground">
@@ -24,7 +23,7 @@ const CardItems = ({ id, items }: { id: string; items: PayableItem[] }) => (
       <li key={item.id} className="flex items-center justify-between gap-2">
         <span className="flex flex-wrap items-center gap-2">
           {item.name}
-          {item.remainingMonths !== null && <Badge variant="outline">{remainingLabel(item.remainingMonths)}</Badge>}
+          {item.remainingMonths !== null && <Badge variant="outline">{formatRemainingMonths(item.remainingMonths)}</Badge>}
           {item.status === "paused" && <Badge variant="outline">Pausado</Badge>}
         </span>
         <MoneyText cents={item.amountCents} />
