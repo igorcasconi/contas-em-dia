@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/mvp-contas-em-dia/design.md`
 **Testing**: `.specs/codebase/TESTING.md`
-**Status**: In Progress
+**Status**: Done
 
 Commit por task: Conventional Commits — `<type>(<scope>): <descrição>` (ex: `feat(payments): add pay_card rpc`).
 
@@ -785,8 +785,8 @@ T41, T42 ──→ T43 ──→ T44
 **Tools**: MCP: claude-in-chrome (checagem visual 375/1280)
 
 **Done when**:
-- [ ] e2e: após pagar boleto 100 + banco 200, sobra = salário − 300; gráficos renderizam; estado vazio de cartões
-- [ ] Gate e2e; ~3 tests pass
+- [x] e2e: após pagar boleto 100 + banco 200, sobra = salário − 300; gráficos renderizam; estado vazio de cartões; sobra negativa em destaque; barras conferidas por screenshot 375/1280 (Playwright no lugar do Chrome MCP)
+- [x] Gate e2e; 4 tests pass (2 fluxos × mobile/desktop)
 
 **Tests**: e2e · **Gate**: e2e
 
@@ -800,8 +800,8 @@ T41, T42 ──→ T43 ──→ T44
 **Requirement**: todas (regressão)
 
 **Done when**:
-- [ ] e2e jornada passa em 375px
-- [ ] Gate full + e2e (suite completa)
+- [x] e2e jornada passa em 375px — `loading.tsx` dispensado (Suspense por página); jornada expôs 2 bugs corrigidos: modal aberto ao navegar pelo aviso de cadastro e ids de campo duplicados entre rotas preservadas
+- [x] Gate full + e2e (suite completa) — 135 unit/integration + 39 e2e (+1 skip: jornada só no mobile) + build
 
 **Tests**: e2e · **Gate**: full + e2e
 

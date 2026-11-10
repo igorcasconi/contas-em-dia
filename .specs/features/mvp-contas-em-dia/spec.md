@@ -12,9 +12,9 @@ App web mobile-first onde o usuário cadastra uma vez suas recorrências (boleto
 
 ## Goals
 
-- [ ] Usuário registra todos os pagamentos prioritários do mês em ≤ 1 modal por boleto/banco.
-- [ ] Usuário vê, em uma tela, quanto do salário sobra após os pagamentos do mês.
-- [ ] Usuário identifica pendências do mês sem rolar além dos itens não-pagos (ordenação).
+- [x] Usuário registra todos os pagamentos prioritários do mês em ≤ 1 modal por boleto/banco.
+- [x] Usuário vê, em uma tela, quanto do salário sobra após os pagamentos do mês.
+- [x] Usuário identifica pendências do mês sem rolar além dos itens não-pagos (ordenação).
 
 ## Out of Scope
 
@@ -299,28 +299,28 @@ App web mobile-first onde o usuário cadastra uma vez suas recorrências (boleto
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| AUTH-01 | P1: Cadastro e login — cadastro | In Tasks | Implementing |
-| AUTH-02 | P1: Cadastro e login — login/erros | In Tasks | Implementing |
-| AUTH-03 | P1: Cadastro e login — refresh + 30 dias | In Tasks | Implementing |
-| AUTH-04 | P1: Cadastro e login — rotas protegidas/logout | In Tasks | Implementing |
-| ONB-01 | P1: Onboarding | In Tasks | Implementing |
-| TIPO-01 | P1: Cadastro de tipos | In Tasks | Implementing |
-| BANCO-01 | P1: Cadastro de bancos | In Tasks | Implementing |
-| BOL-01 | P1: Cadastro de boletos — fixo/variável | In Tasks | Implementing |
-| BOL-02 | P1: Cadastro de boletos — editar/remover | In Tasks | Implementing |
-| CART-01 | P1: Itens de cartão — recorrente/parcelado | In Tasks | Implementing |
-| CART-02 | P1: Itens de cartão — editar/remover/status | In Tasks | Implementing |
-| PAG-01 | P1: Pagamento de boleto | In Tasks | Implementing |
-| PAG-02 | P1: Pagamento de cartão — checklist/total | In Tasks | Implementing |
-| PAG-03 | P1: Pagamento de cartão — pausar/reativar/remover | In Tasks | Implementing |
-| PAG-04 | P1: Pagamento de cartão — decremento de parcelas | In Tasks | Implementing |
-| HOME-01 | P1: Tela inicial — salário e sobra | In Tasks | Implementing |
-| HOME-02 | P1: Tela inicial — lista e ordenação | In Tasks | Implementing |
-| GRAF-01 | P1: Gráficos — anual | In Tasks | In Tasks |
-| GRAF-02 | P1: Gráficos — por banco | In Tasks | In Tasks |
-| SAL-01 | P1: Atualizar salário | In Tasks | Implementing |
-| NAV-01 | P1: Navegação e layout | In Tasks | Implementing |
-| UNDO-01 | P2: Desfazer pagamento | In Tasks | Implementing |
+| AUTH-01 | P1: Cadastro e login — cadastro | In Tasks | Done |
+| AUTH-02 | P1: Cadastro e login — login/erros | In Tasks | Done |
+| AUTH-03 | P1: Cadastro e login — refresh + 30 dias | In Tasks | Done |
+| AUTH-04 | P1: Cadastro e login — rotas protegidas/logout | In Tasks | Done |
+| ONB-01 | P1: Onboarding | In Tasks | Done |
+| TIPO-01 | P1: Cadastro de tipos | In Tasks | Done |
+| BANCO-01 | P1: Cadastro de bancos | In Tasks | Done |
+| BOL-01 | P1: Cadastro de boletos — fixo/variável | In Tasks | Done |
+| BOL-02 | P1: Cadastro de boletos — editar/remover | In Tasks | Done |
+| CART-01 | P1: Itens de cartão — recorrente/parcelado | In Tasks | Done |
+| CART-02 | P1: Itens de cartão — editar/remover/status | In Tasks | Done |
+| PAG-01 | P1: Pagamento de boleto | In Tasks | Done |
+| PAG-02 | P1: Pagamento de cartão — checklist/total | In Tasks | Done |
+| PAG-03 | P1: Pagamento de cartão — pausar/reativar/remover | In Tasks | Done |
+| PAG-04 | P1: Pagamento de cartão — decremento de parcelas | In Tasks | Done |
+| HOME-01 | P1: Tela inicial — salário e sobra | In Tasks | Done |
+| HOME-02 | P1: Tela inicial — lista e ordenação | In Tasks | Done |
+| GRAF-01 | P1: Gráficos — anual | In Tasks | Done |
+| GRAF-02 | P1: Gráficos — por banco | In Tasks | Done |
+| SAL-01 | P1: Atualizar salário | In Tasks | Done |
+| NAV-01 | P1: Navegação e layout | In Tasks | Done |
+| UNDO-01 | P2: Desfazer pagamento | In Tasks | Done |
 
 **Coverage:** 22 total, 22 mapped to tasks, 0 unmapped
 
@@ -328,14 +328,14 @@ App web mobile-first onde o usuário cadastra uma vez suas recorrências (boleto
 
 ## Open Questions (TODO)
 
-- [ ] AUTH-03: confirmar se time-box de sessão (30 dias) do Supabase Auth está disponível no plano; senão, aplicar limite via proxy/middleware da aplicação.
-- [ ] Verificar compatibilidade de `@supabase/ssr`, Recharts e shadcn/ui com Next 16 / React 19 / Tailwind 4.
+- [x] AUTH-03: time-box é só plano Pro → limite de 30 dias no proxy via claim `amr[].timestamp` (verificado estável entre refreshes).
+- [x] Compatibilidade verificada: `@supabase/ssr` 0.12, Recharts 3, shadcn 4 com Next 16 / React 19 / Tailwind 4.
 
 ---
 
 ## Success Criteria
 
-- [ ] Usuário novo completa cadastro → onboarding → 1º pagamento em < 3 minutos.
-- [ ] Sobra exibida sempre igual a salário do mês − soma dos pagamentos do mês.
-- [ ] Todas as telas utilizáveis em 375px de largura sem scroll horizontal.
-- [ ] Nenhum usuário acessa dados de outro (RLS validado).
+- [x] Usuário novo completa cadastro → onboarding → 1º pagamento em < 3 minutos. — jornada automatizada completa em ~8s; tempo com usuário real não medido.
+- [x] Sobra exibida sempre igual a salário do mês − soma dos pagamentos do mês. (unit `computeLeftover` + e2e dashboard/jornada)
+- [x] Todas as telas utilizáveis em 375px de largura sem scroll horizontal. — e2e em viewport mobile para todas as telas; ausência de scroll horizontal checada programaticamente na Início (fim da jornada).
+- [x] Nenhum usuário acessa dados de outro (RLS validado). (integration: RLS e FKs compostas em todas as tabelas; escrita de pagamentos/salário só via RPC)
