@@ -158,8 +158,8 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] Tipos exportados `CardPurchase`, `CardPurchaseGroup`
-- [ ] Gate: quick
+- [x] Tipos exportados `CardPurchase`, `CardPurchaseGroup`
+- [x] Gate: quick
 
 **Tests**: none (matriz: query Supabase = integration + e2e)
 **Gate**: quick
