@@ -14,7 +14,19 @@ type Fixtures = {
 };
 
 export const test = base.extend<Fixtures>({
-   
+  // Overlay de dev do Next fica onde o dev deixou (.next/dev/cache) e pode cobrir a bottom nav
+  page: async ({ page }, provide) => {
+    await page.addInitScript(() => {
+      document.addEventListener("DOMContentLoaded", () => {
+        const style = document.createElement("style");
+        style.textContent = "nextjs-portal { display: none !important; }";
+        document.head.append(style);
+      });
+    });
+    await provide(page);
+  },
+
+
   testUser: async ({}, provide) => {
     const user = await createTestUser();
     await provide(user);
