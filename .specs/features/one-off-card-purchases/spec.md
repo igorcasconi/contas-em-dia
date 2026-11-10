@@ -135,8 +135,8 @@ Decisões detalhadas: [context.md](./context.md).
 | HOME-01 | P1: Início — avulsos na fatura, badge, ordem, banco só com avulsos | In Tasks | In Tasks |
 | HOME-02 | P1: Início — banco só com avulsos no "Adicionar pagamento" | In Tasks | In Tasks |
 | PAY-01 | P1: Pagar — checklist com avulsos travados | In Tasks | In Tasks |
-| PAY-02 | P1: Pagar — `pay_card` soma avulsos (imutáveis enquanto pago) | In Tasks | In Tasks |
-| PAY-03 | P1: Pagar — `undo_payment` reabre avulsos | In Tasks | In Tasks |
+| PAY-02 | P1: Pagar — `pay_card` soma avulsos (imutáveis enquanto pago) | In Tasks | Implementing |
+| PAY-03 | P1: Pagar — `undo_payment` reabre avulsos | In Tasks | Implementing |
 | LOCK-01 | P1: Bloqueio — regra no banco (insert/update/delete) | In Tasks | Done |
 | LOCK-02 | P1: Bloqueio — UI "Fatura paga" + mensagem | In Tasks | In Tasks |
 

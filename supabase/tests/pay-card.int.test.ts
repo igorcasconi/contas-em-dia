@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 
 import { type CardSelection, seedBankWithItems } from "./card-fixtures";
-import { type TestUser, createTestUser } from "./helpers";
+import { type TestUser, admin, createTestUser, must, previousMonth } from "./helpers";
 
 describe("pay_card", () => {
   let user: TestUser;
@@ -12,6 +12,21 @@ describe("pay_card", () => {
 
   const getItem = async (id: string) =>
     (await user.client.from("card_items").select("status, remaining_months, ended_at").eq("id", id).single()).data!;
+
+  const getTotal = async (paymentId: string) =>
+    (await user.client.from("payments").select("total_cents").eq("id", paymentId).single()).data?.total_cents;
+
+  /** Avulso do mês atual no banco, com tipo próprio do dono. */
+  const addPurchase = async (bankId: string, amount_cents: number, as: TestUser = user) => {
+    const category = must(await as.client.from("categories").insert({ name: `Avulso ${crypto.randomUUID()}` }).select("id").single());
+    return must(
+      await as.client
+        .from("card_purchases")
+        .insert({ name: "Compra", amount_cents, bank_id: bankId, category_id: category.id })
+        .select("id")
+        .single(),
+    ).id;
+  };
 
   beforeAll(async () => {
     [user, other] = await Promise.all([createTestUser(), createTestUser()]);
@@ -160,5 +175,87 @@ describe("pay_card", () => {
       p_items: [],
     });
     expect(selectionError?.code).toBe("42501");
+  });
+
+  describe("card purchases", () => {
+    test("total includes the bank's purchases of the month", async () => {
+      const { bankId, ids } = await seedBankWithItems(user, "Avulsos", [
+        { name: "Netflix", amount_cents: 5000 },
+        { name: "Spotify", amount_cents: 2000 },
+      ]);
+      await addPurchase(bankId, 3000);
+      await addPurchase(bankId, 1500);
+
+      const { data: paymentId, error } = await payCard(bankId, [
+        { card_item_id: ids.Netflix, included: true },
+        { card_item_id: ids.Spotify, included: false },
+      ]);
+      expect(error).toBeNull();
+      expect(await getTotal(paymentId!)).toBe(9500);
+    });
+
+    test("bank with only purchases can be paid", async () => {
+      const { bankId } = await seedBankWithItems(user, "Só avulsos", []);
+      await addPurchase(bankId, 8000);
+
+      const { data: paymentId, error } = await payCard(bankId, []);
+      expect(error).toBeNull();
+      expect(await getTotal(paymentId!)).toBe(8000);
+    });
+
+    test("bank without included items nor purchases cannot be paid", async () => {
+      const { bankId } = await seedBankWithItems(user, "Vazio", []);
+
+      const { error } = await payCard(bankId, []);
+      expect(error).toMatchObject({ code: "P0001", message: "Selecione ao menos um item." });
+    });
+
+    test("ignores purchases from another bank, another month or another user", async () => {
+      const own = await seedBankWithItems(user, "Próprio", [{ name: "Item", amount_cents: 1000 }]);
+      const sibling = await seedBankWithItems(user, "Irmão", []);
+      const foreign = await seedBankWithItems(other, "Estranho", []);
+      await addPurchase(sibling.bankId, 7000);
+      await addPurchase(foreign.bankId, 9000, other);
+      const category = must(await user.client.from("categories").insert({ name: "Antigo" }).select("id").single());
+      must(
+        await admin
+          .from("card_purchases")
+          .insert({
+            user_id: user.userId,
+            month: previousMonth(),
+            name: "Mês passado",
+            amount_cents: 3000,
+            bank_id: own.bankId,
+            category_id: category.id,
+          })
+          .select("id")
+          .single(),
+      );
+
+      const { data: paymentId, error } = await payCard(own.bankId, [{ card_item_id: own.ids.Item, included: true }]);
+      expect(error).toBeNull();
+      expect(await getTotal(paymentId!)).toBe(1000);
+    });
+
+    test("undoing the payment reopens the bank's purchases", async () => {
+      const { bankId } = await seedBankWithItems(user, "Reaberto", []);
+      const purchaseId = await addPurchase(bankId, 4000);
+      const { data: paymentId } = await payCard(bankId, []);
+
+      const { error: lockedError } = await user.client.from("card_purchases").update({ amount_cents: 1 }).eq("id", purchaseId);
+      expect(lockedError?.code).toBe("P0001");
+
+      const { error: undoError } = await user.client.rpc("undo_payment", { p_payment_id: paymentId! });
+      expect(undoError).toBeNull();
+
+      const { error: updateError } = await user.client
+        .from("card_purchases")
+        .update({ amount_cents: 4500 })
+        .eq("id", purchaseId);
+      expect(updateError).toBeNull();
+
+      const { error: deleteError } = await user.client.from("card_purchases").delete().eq("id", purchaseId);
+      expect(deleteError).toBeNull();
+    });
   });
 });

@@ -84,13 +84,13 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] `total_cents` = recorrentes incluídos + avulsos do banco/mês
-- [ ] Banco só com avulsos: `pay_card(bank, '[]')` registra pagamento
-- [ ] Banco sem itens incluídos e sem avulsos → "Selecione ao menos um item."
-- [ ] Avulsos de outro banco/mês/usuário não entram no total
-- [ ] Após `undo_payment`, avulso do banco volta a aceitar update/delete
-- [ ] Testes existentes de `pay-card.int.test.ts` e `undo-payment.int.test.ts` continuam passando
-- [ ] Gate: `npx vitest run --project integration` + quick
+- [x] `total_cents` = recorrentes incluídos + avulsos do banco/mês
+- [x] Banco só com avulsos: `pay_card(bank, '[]')` registra pagamento
+- [x] Banco sem itens incluídos e sem avulsos → "Selecione ao menos um item."
+- [x] Avulsos de outro banco/mês/usuário não entram no total
+- [x] Após `undo_payment`, avulso do banco volta a aceitar update/delete
+- [x] Testes existentes de `pay-card.int.test.ts` e `undo-payment.int.test.ts` continuam passando
+- [x] Gate: `npx vitest run --project integration` + quick
 
 **Tests**: integration
 **Gate**: full (sem build)
