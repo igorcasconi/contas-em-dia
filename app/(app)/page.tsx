@@ -1,13 +1,13 @@
 import { Suspense } from "react";
 
 import { endCardItemAction } from "@/domains/card-items/actions/card-items";
+import { LeftoverCard } from "@/domains/dashboard/components/LeftoverCard";
+import { getMonthSummary } from "@/domains/dashboard/services/summary";
 import { AddPaymentDialog } from "@/domains/payments/components/AddPaymentDialog";
 import { PayableList } from "@/domains/payments/components/PayableList";
 import { getMonthPayables } from "@/domains/payments/services/payables";
-import { hasAnyPayment } from "@/domains/payments/services/build-payable-rows";
 import { requireOnboarded } from "@/domains/profile/services/profile";
 import { SalaryCard } from "@/domains/salary/components/SalaryCard";
-import { getCurrentSalary } from "@/domains/salary/services/salary";
 import { PageHeader } from "@/shared/components/PageHeader";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { currentMonth, formatMonth } from "@/shared/utils/month";
@@ -18,10 +18,13 @@ const Greeting = async () => {
 };
 
 const Summary = async () => {
-  const [salaryCents, rows] = await Promise.all([getCurrentSalary(), getMonthPayables()]);
+  const { salaryCents, leftoverCents, hasPayments } = await getMonthSummary();
 
   return (
-    <SalaryCard salaryCents={salaryCents} locked={hasAnyPayment(rows)} monthLabel={formatMonth(currentMonth())} />
+    <div className="grid grid-cols-2 gap-3">
+      <SalaryCard salaryCents={salaryCents} locked={hasPayments} monthLabel={formatMonth(currentMonth())} />
+      <LeftoverCard leftoverCents={leftoverCents} />
+    </div>
   );
 };
 
