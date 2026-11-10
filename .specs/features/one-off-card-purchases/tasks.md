@@ -227,10 +227,10 @@ T9 ──→ T10
 - Skill: NONE
 
 **Done when**:
-- [ ] Unit: total = ativos + avulsos; ordem; banco só com avulsos; fatura paga = snapshot + avulsos; avulsos de outro banco não entram; `purchase` false em `card_items`
-- [ ] `pendingOnly` inclui banco só com avulsos (opção do "Adicionar pagamento")
-- [ ] Testes existentes continuam passando
-- [ ] Gate: quick
+- [x] Unit: total = ativos + avulsos; ordem; banco só com avulsos; fatura paga = snapshot + avulsos; avulsos de outro banco não entram; `purchase` false em `card_items`
+- [x] `pendingOnly` inclui banco só com avulsos (opção do "Adicionar pagamento")
+- [x] Testes existentes continuam passando
+- [x] Gate: quick
 
 **Tests**: unit
 **Gate**: quick

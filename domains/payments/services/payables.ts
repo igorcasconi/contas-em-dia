@@ -15,7 +15,7 @@ export const getMonthPayables = cache(async () => {
   const supabase = await createClient();
   const month = currentMonth();
 
-  const [bills, cardItems, banks, payments] = await Promise.all([
+  const [bills, cardItems, cardPurchases, banks, payments] = await Promise.all([
     // Encerrado antes do mês não pode ter pagamento no mês (pay_bill exige boleto aberto)
     supabase
       .from("bills")
@@ -25,6 +25,7 @@ export const getMonthPayables = cache(async () => {
       .from("card_items")
       .select("id, name, bank_id, amount_cents, remaining_months, status")
       .is("ended_at", null),
+    supabase.from("card_purchases").select("id, name, bank_id, amount_cents").eq("month", month),
     supabase.from("banks").select("id, name"),
     supabase
       .from("payments")
@@ -37,6 +38,7 @@ export const getMonthPayables = cache(async () => {
   return buildPayableRows({
     bills: unwrap(bills),
     cardItems: unwrap(cardItems),
+    cardPurchases: unwrap(cardPurchases),
     banks: unwrap(banks),
     payments: unwrap(payments),
   });
