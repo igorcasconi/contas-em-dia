@@ -13,6 +13,8 @@ import {
 } from "@/shared/components/ui/alert-dialog";
 import { Button } from "@/shared/components/ui/button";
 
+import { FormError } from "./FormError";
+
 type ConfirmDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -45,11 +47,7 @@ export const ConfirmDialog = ({
         <AlertDialogTitle>{title}</AlertDialogTitle>
         <AlertDialogDescription>{description}</AlertDialogDescription>
       </AlertDialogHeader>
-      {error && (
-        <p role="alert" className="text-sm text-destructive">
-          {error}
-        </p>
-      )}
+      <FormError error={error} />
       <AlertDialogFooter>
         <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
         <Button variant={destructive ? "destructive" : "default"} disabled={pending} onClick={onConfirm}>

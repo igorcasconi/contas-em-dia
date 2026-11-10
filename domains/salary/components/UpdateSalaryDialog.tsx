@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState, useTransition } from "react";
 
+import { FormError } from "@/shared/components/FormError";
 import { MoneyField } from "@/shared/components/MoneyInput";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -13,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
+import { callAction } from "@/shared/helpers/call-action";
 import { formatBRL } from "@/shared/utils/money";
 
 import { updateSalaryAction } from "../actions/salary";
@@ -38,7 +40,7 @@ export const UpdateSalaryDialog = ({ currentCents, monthLabel, onClose }: Update
   const confirm = () =>
     startUpdate(async () => {
       if (!amountCents) return;
-      const result = await updateSalaryAction(amountCents);
+      const result = await callAction(() => updateSalaryAction(amountCents));
       if (result.ok) onClose();
       else setError(result.error);
     });
@@ -79,11 +81,7 @@ export const UpdateSalaryDialog = ({ currentCents, monthLabel, onClose }: Update
                 {monthLabel}.
               </DialogDescription>
             </DialogHeader>
-            {error && (
-              <p role="alert" className="text-sm text-destructive">
-                {error}
-              </p>
-            )}
+            <FormError error={error} />
             <DialogFooter>
               <Button type="button" variant="outline" disabled={pending} onClick={() => setStep("edit")}>
                 Voltar

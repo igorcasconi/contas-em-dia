@@ -1,7 +1,8 @@
 "use client";
 
 import type { ActionResult } from "@/shared/helpers/action-result";
-import { useModalFormAction, useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
+import { useFormAction } from "@/shared/hooks/use-form-action";
+import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
 
 import { ConfirmDialog } from "./ConfirmDialog";
 import { EmptyState } from "./EmptyState";
@@ -30,7 +31,7 @@ type NameFormModalProps = Pick<SimpleNameCrudProps, "entityLabel" | "createActio
 };
 
 const NameFormModal = ({ item, entityLabel, createAction, updateAction, onClose }: NameFormModalProps) => {
-  const { formAction, pending, fieldErrors, error } = useModalFormAction(item ? updateAction : createAction, onClose);
+  const { formAction, pending, fieldErrors, error } = useFormAction(item ? updateAction : createAction, onClose);
 
   return (
     <FormModal

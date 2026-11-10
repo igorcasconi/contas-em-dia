@@ -9,7 +9,7 @@ import { SelectField } from "@/shared/components/SelectField";
 import { SetupRequired } from "@/shared/components/SetupRequired";
 import { Label } from "@/shared/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
-import { useModalFormAction } from "@/shared/hooks/use-record-dialogs";
+import { useFormAction } from "@/shared/hooks/use-form-action";
 
 import { createBillAction, updateBillAction } from "../actions/bills";
 import type { ActiveBill } from "../services/bills";
@@ -27,7 +27,7 @@ type BillFormModalProps = {
 
 export const BillFormModal = ({ bill, categories, onClose }: BillFormModalProps) => {
   const [valueMode, setValueMode] = useState(bill?.value_mode ?? "fixed");
-  const { formAction, pending, fieldErrors, error } = useModalFormAction(
+  const { formAction, pending, fieldErrors, error } = useFormAction(
     bill ? updateBillAction : createBillAction,
     onClose,
   );

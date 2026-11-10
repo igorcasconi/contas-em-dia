@@ -9,7 +9,7 @@ import { SelectField } from "@/shared/components/SelectField";
 import { SetupRequired } from "@/shared/components/SetupRequired";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Label } from "@/shared/components/ui/label";
-import { useModalFormAction } from "@/shared/hooks/use-record-dialogs";
+import { useFormAction } from "@/shared/hooks/use-form-action";
 
 import { createCardItemAction, updateCardItemAction } from "../actions/card-items";
 import type { ActiveCardItem } from "../services/card-items";
@@ -27,7 +27,7 @@ const toOptions = (records: Option[]) => records.map(({ id, name }) => ({ value:
 
 export const CardItemFormModal = ({ item, categories, banks, onClose }: CardItemFormModalProps) => {
   const [alwaysRecurring, setAlwaysRecurring] = useState(item ? item.remaining_months === null : true);
-  const { formAction, pending, fieldErrors, error } = useModalFormAction(
+  const { formAction, pending, fieldErrors, error } = useFormAction(
     item ? updateCardItemAction : createCardItemAction,
     onClose,
   );

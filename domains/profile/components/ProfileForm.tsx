@@ -1,26 +1,21 @@
 "use client";
 
-import { useActionState } from "react";
-
+import { FormError } from "@/shared/components/FormError";
 import { FormField } from "@/shared/components/FormField";
 import { Button } from "@/shared/components/ui/button";
+import { useFormAction } from "@/shared/hooks/use-form-action";
 import { submitWithoutReset } from "@/shared/utils/form";
 
 import { updateNameAction } from "../actions/profile";
 
 export const ProfileForm = ({ name }: { name: string }) => {
-  const [state, action, pending] = useActionState(updateNameAction, null);
-  const failure = state?.ok === false ? state : undefined;
+  const { formAction, pending, succeeded, fieldErrors, error } = useFormAction(updateNameAction);
 
   return (
-    <form onSubmit={submitWithoutReset(action)} className="flex flex-col gap-4">
-      <FormField label="Nome" name="name" defaultValue={name} errors={failure?.fieldErrors?.name} />
-      {failure && !failure.fieldErrors && (
-        <p role="alert" className="text-sm text-destructive">
-          {failure.error}
-        </p>
-      )}
-      {state?.ok && (
+    <form onSubmit={submitWithoutReset(formAction)} className="flex flex-col gap-4">
+      <FormField label="Nome" name="name" defaultValue={name} errors={fieldErrors?.name} />
+      <FormError error={error} />
+      {succeeded && (
         <p role="status" className="text-sm text-muted-foreground">
           Nome atualizado.
         </p>

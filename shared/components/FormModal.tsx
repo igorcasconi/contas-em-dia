@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 
 import { Button } from "@/shared/components/ui/button";
-import { submitWithoutReset } from "@/shared/utils/form";
 import {
   Dialog,
   DialogClose,
@@ -13,6 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
+import { submitWithoutReset } from "@/shared/utils/form";
+
+import { FormError } from "./FormError";
 
 type FormModalProps = {
   title: string;
@@ -48,11 +50,7 @@ export const FormModal = ({
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         {children}
-        {error && (
-          <p role="alert" className="text-sm text-destructive">
-            {error}
-          </p>
-        )}
+        <FormError error={error} />
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline">

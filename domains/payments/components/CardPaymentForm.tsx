@@ -10,6 +10,7 @@ import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import type { ActionResult } from "@/shared/helpers/action-result";
+import { callAction } from "@/shared/helpers/call-action";
 import { useRecordDialogs } from "@/shared/hooks/use-record-dialogs";
 
 import { payCardAction } from "../actions/payments";
@@ -100,10 +101,9 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
     if (!bankId) return;
 
     startPayment(async () => {
-      const result = await payCardAction({
-        bankId,
-        items: items.map((item) => ({ cardItemId: item.id, ...choiceOf(item) })),
-      });
+      const result = await callAction(() =>
+        payCardAction({ bankId, items: items.map((item) => ({ cardItemId: item.id, ...choiceOf(item) })) }),
+      );
       if (result.ok) onDone();
       else setError(result.error);
     });

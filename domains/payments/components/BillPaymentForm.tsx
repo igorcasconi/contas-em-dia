@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { MoneyField } from "@/shared/components/MoneyInput";
 import { SelectField } from "@/shared/components/SelectField";
-import { useModalFormAction } from "@/shared/hooks/use-record-dialogs";
+import { useFormAction } from "@/shared/hooks/use-form-action";
 import { submitWithoutReset } from "@/shared/utils/form";
 
 import { payBillAction } from "../actions/payments";
@@ -16,7 +16,7 @@ type PendingBill = Extract<PayableRow, { kind: "bill" }>;
 export const BillPaymentForm = ({ bills, onDone }: { bills: PendingBill[]; onDone: () => void }) => {
   const [billId, setBillId] = useState<string>();
   const [variableAmount, setVariableAmount] = useState<number | null>(null);
-  const { formAction, pending, fieldErrors, error } = useModalFormAction(payBillAction, onDone);
+  const { formAction, pending, fieldErrors, error } = useFormAction(payBillAction, onDone);
 
   if (!bills.length) return <p className="text-sm text-muted-foreground">Nenhum boleto pendente neste mês.</p>;
 
