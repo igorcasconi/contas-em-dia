@@ -14,7 +14,24 @@ type Fixtures = {
 };
 
 export const test = base.extend<Fixtures>({
-   
+  // Overlay de dev do Next fica onde o dev deixou (.next/dev/cache) e pode cobrir a bottom nav.
+  // Escondido, ele deixa de sinalizar erros: erro não tratado na página falha o teste.
+  page: async ({ page }, provide) => {
+    const pageErrors: string[] = [];
+    page.on("pageerror", (error) => pageErrors.push(error.message));
+
+    await page.addInitScript(() => {
+      document.addEventListener("DOMContentLoaded", () => {
+        const style = document.createElement("style");
+        style.textContent = "nextjs-portal { display: none !important; }";
+        document.head.append(style);
+      });
+    });
+    await provide(page);
+
+    expect(pageErrors, "erros não tratados na página").toEqual([]);
+  },
+
   testUser: async ({}, provide) => {
     const user = await createTestUser();
     await provide(user);

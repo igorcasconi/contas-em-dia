@@ -30,21 +30,17 @@ export const BottomNav = () => {
     >
       <ul className="grid grid-cols-4">
         {NAV_ITEMS.map(({ href, label, Icon }) => (
-          <li key={href}>
+          <li key={href} className="flex min-w-0 justify-center py-1.5">
             <Link
               href={href}
               aria-current={isActive(href) ? "page" : undefined}
               className={cn(
-                "flex flex-col items-center gap-1 py-2 text-xs text-white",
-                isActive(href) && "text-foreground",
+                "flex min-w-0 max-w-full flex-col items-center justify-center gap-0.5 rounded-lg px-2 py-1 text-[11px] leading-tight text-white",
+                isActive(href) && "bg-muted text-foreground",
               )}
             >
-              <div
-                className={`${isActive(href) ? "bg-muted items-center text-center" : ""} flex-col p-2 items-center justify-center rounded-lg`}
-              >
-                <Icon className="size-5" aria-hidden />
-                {label}
-              </div>
+              <Icon className="size-5 shrink-0" aria-hidden />
+              <span className="max-w-full truncate">{label}</span>
             </Link>
           </li>
         ))}
