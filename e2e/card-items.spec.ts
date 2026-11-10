@@ -1,10 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { must } from "@/supabase/tests/helpers";
 
-import { loginAsOnboardedUser } from "./helpers";
+import { expect, test } from "./fixtures";
 
-test("cadastra itens recorrente e parcelado no cartão, agrupa por banco e remove", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
-  await user.client.from("categories").insert({ name: "Streaming" });
+test("cadastra itens recorrente e parcelado no cartão, agrupa por banco e remove", async ({ page, onboardedUser: user }) => {
+  must(await user.client.from("categories").insert({ name: "Streaming" }).select());
 
   await page.goto("/recorrencias?aba=cartao");
   await expect(page.getByRole("tab", { name: "Cartão" })).toHaveAttribute("aria-selected", "true");
@@ -12,7 +11,7 @@ test("cadastra itens recorrente e parcelado no cartão, agrupa por banco e remov
   await expect(page.getByText("Cadastre um banco antes de criar itens do cartão.")).toBeVisible();
   await page.getByRole("button", { name: "Cancelar" }).click();
 
-  await user.client.from("banks").insert({ name: "Nubank" });
+  must(await user.client.from("banks").insert({ name: "Nubank" }).select());
   await page.reload();
 
   const dialog = page.getByRole("dialog");
@@ -44,12 +43,15 @@ test("cadastra itens recorrente e parcelado no cartão, agrupa por banco e remov
   await dialog.getByRole("button", { name: "Salvar" }).click();
   await expect(nubank.getByRole("listitem").filter({ hasText: "Notebook" })).toContainText("3 meses restantes");
 
+  await page.getByRole("button", { name: "Editar Netflix" }).click();
+  await dialog.getByLabel("Valor mensal").fill("6990");
+  await dialog.getByRole("button", { name: "Salvar" }).click();
+  await expect(netflix).toContainText("R$ 69,90");
+
   await page.getByRole("button", { name: "Remover Netflix" }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Remover" }).click();
   await expect(netflix).toBeHidden();
 
   await page.getByRole("tab", { name: "Boletos" }).click();
   await expect(page).toHaveURL(/\/recorrencias$/);
-
-  await user.remove();
 });

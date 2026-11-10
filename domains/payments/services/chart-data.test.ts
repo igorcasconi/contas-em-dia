@@ -27,6 +27,15 @@ describe("fillYearMonths", () => {
   });
 });
 
+describe("fillYearMonths at year turn", () => {
+  test("january shows only the new year; previous december is ignored", () => {
+    const months = fillYearMonths([{ month: "2026-12-01", total_cents: 999 }], "2027-01-01");
+
+    expect(months[0]).toEqual({ month: "2027-01-01", label: "Jan", totalCents: 0 });
+    expect(months.slice(1).every(({ totalCents }) => totalCents === null)).toBe(true);
+  });
+});
+
 describe("toBankTotals", () => {
   test("paid card rows only, highest total first", () => {
     const rows: PayableRow[] = [

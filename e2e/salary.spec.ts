@@ -1,9 +1,8 @@
-import { expect, test } from "@playwright/test";
+import { must } from "@/supabase/tests/helpers";
 
-import { loginAsOnboardedUser } from "./helpers";
+import { expect, test } from "./fixtures";
 
-test("atualiza salário com confirmação e trava enquanto houver pagamento no mês", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
+test("atualiza salário com confirmação e trava enquanto houver pagamento no mês", async ({ page, onboardedUser: user }) => {
   const salary = page.getByRole("region", { name: "Salário" });
   const editButton = salary.getByRole("button", { name: "Atualizar salário" });
   const dialog = page.getByRole("dialog");
@@ -26,13 +25,13 @@ test("atualiza salário com confirmação e trava enquanto houver pagamento no m
   await expect(dialog).toBeHidden();
   await expect(salary).toContainText("R$ 5.500,00");
 
-  const { data: category } = await user.client.from("categories").insert({ name: "Casa" }).select("id").single();
-  const { data: bill } = await user.client
+  const category = must(await user.client.from("categories").insert({ name: "Casa" }).select("id").single());
+  const bill = must(await user.client
     .from("bills")
-    .insert({ name: "Vivo", category_id: category!.id, value_mode: "fixed", amount_cents: 12000 })
+    .insert({ name: "Vivo", category_id: category.id, value_mode: "fixed", amount_cents: 12000 })
     .select("id")
-    .single();
-  await user.client.rpc("pay_bill", { p_bill_id: bill!.id });
+    .single());
+  must(await user.client.rpc("pay_bill", { p_bill_id: bill.id }));
   await page.reload();
   await expect(editButton).toBeDisabled();
   await expect(salary).toContainText("Desfaça os pagamentos do mês para alterar o salário.");
@@ -40,6 +39,4 @@ test("atualiza salário com confirmação e trava enquanto houver pagamento no m
   await page.getByRole("button", { name: "Desfazer pagamento de Vivo" }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Desfazer" }).click();
   await expect(editButton).toBeEnabled();
-
-  await user.remove();
 });

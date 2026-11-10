@@ -1,10 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
-import { loginAsOnboardedUser } from "./helpers";
-
-test("altera o nome e sai da conta", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
-
+test("altera o nome e sai da conta", async ({ page, onboardedUser: _user }) => {
   await page.goto("/configuracoes/perfil");
   await page.getByLabel("Nome").fill("Bea");
   await page.getByRole("button", { name: "Salvar" }).click();
@@ -19,6 +15,4 @@ test("altera o nome e sai da conta", async ({ page }) => {
 
   await page.goto("/");
   await expect(page).toHaveURL(/\/login$/);
-
-  await user.remove();
 });

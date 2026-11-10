@@ -1,9 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
-import { loginAsOnboardedUser } from "./helpers";
-
-test("cria, valida duplicado, edita e exclui tipos", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
+test("cria, valida duplicado, edita e exclui tipos", async ({ page, onboardedUser: _user }) => {
   await page.goto("/configuracoes/tipos");
   await expect(page.getByText("Nenhum tipo cadastrado.")).toBeVisible();
 
@@ -26,6 +23,4 @@ test("cria, valida duplicado, edita e exclui tipos", async ({ page }) => {
   await page.getByRole("button", { name: "Excluir Internet Fibra" }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Excluir" }).click();
   await expect(page.getByText("Nenhum tipo cadastrado.")).toBeVisible();
-
-  await user.remove();
 });

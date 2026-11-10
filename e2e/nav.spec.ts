@@ -1,11 +1,7 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
+import { login } from "./helpers";
 
-import { createTestUser } from "@/supabase/tests/helpers";
-
-import { login, loginAsOnboardedUser } from "./helpers";
-
-test("navega entre as seções pelo menu do dispositivo", async ({ page }, testInfo) => {
-  const user = await loginAsOnboardedUser(page);
+test("navega entre as seções pelo menu do dispositivo", async ({ page, onboardedUser: _user }, testInfo) => {
   await expect(page.getByRole("heading", { name: "Olá, Igor" })).toBeVisible();
 
   const isMobile = testInfo.project.name === "mobile";
@@ -22,16 +18,10 @@ test("navega entre as seções pelo menu do dispositivo", async ({ page }, testI
 
   await visibleNav.getByRole("link", { name: "Início" }).click();
   await expect(page).toHaveURL(/\/$/);
-
-  await user.remove();
 });
 
-test("login sem onboarding leva ao onboarding, sem menu", async ({ page }) => {
-  const user = await createTestUser();
-
+test("login sem onboarding leva ao onboarding, sem menu", async ({ page, testUser: user }) => {
   await login(page, user.email, user.password);
   await expect(page).toHaveURL(/\/onboarding$/);
   await expect(page.getByRole("navigation")).toHaveCount(0);
-
-  await user.remove();
 });

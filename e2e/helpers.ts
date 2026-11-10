@@ -1,6 +1,4 @@
-import { expect, type Page } from "@playwright/test";
-
-import { createTestUser } from "@/supabase/tests/helpers";
+import type { Page } from "@playwright/test";
 
 export const login = async (page: Page, email: string, password: string) => {
   await page.goto("/login");
@@ -9,14 +7,11 @@ export const login = async (page: Page, email: string, password: string) => {
   await page.getByRole("button", { name: "Entrar" }).click();
 };
 
-/** Usuário com onboarding concluído (nome "Igor", salário R$ 5.000,00), já logado na Início. */
-export const loginAsOnboardedUser = async (page: Page) => {
-  const user = await createTestUser();
-  const { error } = await user.client.rpc("complete_onboarding", { p_name: "Igor", p_amount_cents: 500000 });
-  if (error) throw error;
-
-  await login(page, user.email, user.password);
-  await expect(page).toHaveURL(/\/$/);
-
-  return user;
+/** Abre "Adicionar pagamento" e escolhe o tipo; retorna o diálogo. */
+export const openPayment = async (page: Page, kind: "Boleto" | "Cartão de crédito") => {
+  await page.getByRole("button", { name: "Adicionar pagamento" }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Tipo de pagamento").click();
+  await page.getByRole("option", { name: kind, exact: true }).click();
+  return dialog;
 };

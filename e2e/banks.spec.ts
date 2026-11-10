@@ -1,9 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
-import { loginAsOnboardedUser } from "./helpers";
-
-test("cria, valida duplicado e edita bancos", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
+test("cria, valida duplicado e edita bancos", async ({ page, onboardedUser: _user }) => {
   await page.goto("/configuracoes");
   await page.getByRole("link", { name: "Bancos" }).click();
   await expect(page.getByText("Nenhum banco cadastrado.")).toBeVisible();
@@ -23,6 +20,4 @@ test("cria, valida duplicado e edita bancos", async ({ page }) => {
   await page.getByLabel("Nome").fill("Itaú");
   await page.getByRole("button", { name: "Salvar" }).click();
   await expect(page.getByRole("listitem").filter({ hasText: "Itaú" })).toBeVisible();
-
-  await user.remove();
 });

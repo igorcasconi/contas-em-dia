@@ -1,11 +1,9 @@
-import { expect, test } from "@playwright/test";
-
 import { seedBankWithItems } from "@/supabase/tests/card-fixtures";
 
-import { loginAsOnboardedUser } from "./helpers";
+import { expect, test } from "./fixtures";
+import { openPayment } from "./helpers";
 
-test("paga fatura com checklist: desmarcar, pausar, remover, reativar e parcela travada", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
+test("paga fatura com checklist: desmarcar, pausar, remover, reativar e parcela travada", async ({ page, onboardedUser: user }) => {
   await seedBankWithItems(user, "Nubank", [
     { name: "Netflix", amount_cents: 5590 },
     { name: "Spotify", amount_cents: 2190 },
@@ -14,10 +12,7 @@ test("paga fatura com checklist: desmarcar, pausar, remover, reativar e parcela 
   ]);
   await page.reload();
 
-  await page.getByRole("button", { name: "Adicionar pagamento" }).click();
-  const dialog = page.getByRole("dialog");
-  await dialog.getByLabel("Tipo de pagamento").click();
-  await page.getByRole("option", { name: "Cartão de crédito" }).click();
+  const dialog = await openPayment(page, "Cartão de crédito");
   await dialog.getByLabel("Banco").click();
   await page.getByRole("option", { name: "Nubank" }).click();
 
@@ -58,6 +53,21 @@ test("paga fatura com checklist: desmarcar, pausar, remover, reativar e parcela 
 
   const { data: payment } = await user.client.from("payments").select("total_cents").single();
   expect(payment?.total_cents).toBe(43610);
+});
 
-  await user.remove();
+test("sem itens marcados o pagamento não pode ser confirmado", async ({ page, onboardedUser: user }) => {
+  await seedBankWithItems(user, "Inter", [
+    { name: "Spotify", amount_cents: 2190 },
+    { name: "Disney", amount_cents: 3390 },
+  ]);
+  await page.reload();
+
+  const dialog = await openPayment(page, "Cartão de crédito");
+  await dialog.getByLabel("Banco").click();
+  await page.getByRole("option", { name: "Inter" }).click();
+  await dialog.getByRole("checkbox", { name: "Spotify" }).click();
+  await dialog.getByRole("checkbox", { name: "Disney" }).click();
+
+  await expect(dialog.getByText("Total: R$ 0,00")).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Confirmar" })).toBeDisabled();
 });

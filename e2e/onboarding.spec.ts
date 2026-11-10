@@ -1,8 +1,8 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
-test("cadastro → onboarding → início; onboarding não é exibido de novo", async ({ page }) => {
+test("cadastro → onboarding → início; onboarding não é exibido de novo", async ({ page, signUpEmail }) => {
   await page.goto("/cadastro");
-  await page.getByLabel("Email").fill(`e2e-${crypto.randomUUID()}@example.com`);
+  await page.getByLabel("Email").fill(signUpEmail);
   await page.getByLabel("Senha", { exact: true }).fill("senha-segura");
   await page.getByLabel("Confirmar senha").fill("senha-segura");
   await page.getByRole("button", { name: "Criar conta" }).click();

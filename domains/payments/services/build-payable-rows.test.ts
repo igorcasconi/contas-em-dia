@@ -146,3 +146,24 @@ describe("pendingOnly", () => {
     expect(pendingOnly(rows).map(({ name }) => name)).toEqual(["A"]);
   });
 });
+
+describe("paid amount", () => {
+  test("paid bills show the paid amount, not the registered one", () => {
+    const rows = buildPayableRows({
+      ...empty,
+      bills: [
+        bill("Fixo editado", { amount_cents: 1000 }),
+        bill("Variável", { value_mode: "variable", amount_cents: null }),
+      ],
+      payments: [
+        { id: "p1", kind: "bill", bill_id: "Fixo editado", bank_id: null, total_cents: 1200, items: [] },
+        { id: "p2", kind: "bill", bill_id: "Variável", bank_id: null, total_cents: 18745, items: [] },
+      ],
+    });
+
+    expect(rows.map(({ name, amountCents }) => [name, amountCents])).toEqual([
+      ["Variável", 18745],
+      ["Fixo editado", 1200],
+    ]);
+  });
+});

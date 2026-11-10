@@ -46,3 +46,11 @@ export const previousMonth = () => {
   const [year, month] = currentMonth().split("-").map(Number);
   return new Date(Date.UTC(year, month - 2, 1)).toISOString().slice(0, 10);
 };
+
+/** Remove usuário criado pela UI (cadastro), achando-o pelo email. */
+export const removeUserByEmail = async (email: string) => {
+  const { data, error } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  if (error) throw error;
+  const user = data.users.find((candidate) => candidate.email === email);
+  if (user) await admin.auth.admin.deleteUser(user.id);
+};

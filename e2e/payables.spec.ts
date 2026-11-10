@@ -1,24 +1,22 @@
-import { expect, test } from "@playwright/test";
-
 import { seedBankWithItems } from "@/supabase/tests/card-fixtures";
+import { must } from "@/supabase/tests/helpers";
 
-import { loginAsOnboardedUser } from "./helpers";
+import { expect, test } from "./fixtures";
 
-test("lista do mês: não pagos primeiro, fatura expansível e desfazer", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
-  const { data: category } = await user.client.from("categories").insert({ name: "Casa" }).select("id").single();
-  const { data: bills } = await user.client
+test("lista do mês: não pagos primeiro, fatura expansível e desfazer", async ({ page, onboardedUser: user }) => {
+  const category = must(await user.client.from("categories").insert({ name: "Casa" }).select("id").single());
+  const bills = must(await user.client
     .from("bills")
     .insert([
-      { name: "Vivo", category_id: category!.id, value_mode: "fixed", amount_cents: 12000 },
-      { name: "Enel", category_id: category!.id, value_mode: "variable" },
+      { name: "Vivo", category_id: category.id, value_mode: "fixed", amount_cents: 12000 },
+      { name: "Enel", category_id: category.id, value_mode: "variable" },
     ])
-    .select("id, name");
+    .select("id, name"));
   await seedBankWithItems(user, "Nubank", [
     { name: "Netflix", amount_cents: 5590 },
     { name: "Notebook", amount_cents: 40220, remaining_months: 3 },
   ]);
-  await user.client.rpc("pay_bill", { p_bill_id: bills!.find(({ name }) => name === "Vivo")!.id });
+  must(await user.client.rpc("pay_bill", { p_bill_id: bills.find(({ name }) => name === "Vivo")!.id }));
   await page.reload();
 
   const list = page.getByRole("region", { name: "Pagamentos do mês" }).getByRole("list").first();
@@ -45,16 +43,10 @@ test("lista do mês: não pagos primeiro, fatura expansível e desfazer", async 
   await expect(rows.nth(1)).toContainText("Vivo");
   await expect(rows.nth(1)).toContainText("Não pago");
   await expect(page.getByRole("button", { name: /Desfazer pagamento/ })).toHaveCount(0);
-
-  await user.remove();
 });
 
-test("estado vazio leva às recorrências", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
-
+test("estado vazio leva às recorrências", async ({ page, onboardedUser: _user }) => {
   await expect(page.getByText("Nenhuma conta cadastrada.")).toBeVisible();
   await page.getByRole("link", { name: "Cadastrar recorrências" }).click();
   await expect(page).toHaveURL(/\/recorrencias$/);
-
-  await user.remove();
 });

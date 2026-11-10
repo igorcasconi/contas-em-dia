@@ -1,13 +1,9 @@
-import { expect, test } from "@playwright/test";
-
-import { createTestUser } from "@/supabase/tests/helpers";
-
-const uniqueEmail = () => `e2e-${crypto.randomUUID()}@example.com`;
+import { expect, test } from "./fixtures";
 
 test.describe("cadastro", () => {
-  test("cria conta e segue para o onboarding", async ({ page }) => {
+  test("cria conta e segue para o onboarding", async ({ page, signUpEmail }) => {
     await page.goto("/cadastro");
-    await page.getByLabel("Email").fill(uniqueEmail());
+    await page.getByLabel("Email").fill(signUpEmail);
     await page.getByLabel("Senha", { exact: true }).fill("senha-segura");
     await page.getByLabel("Confirmar senha").fill("senha-segura");
     await page.getByRole("button", { name: "Criar conta" }).click();
@@ -19,9 +15,7 @@ test.describe("cadastro", () => {
     await expect(page).toHaveURL(/\/onboarding$/);
   });
 
-  test("mostra erro para email já cadastrado", async ({ page }) => {
-    const user = await createTestUser();
-
+  test("mostra erro para email já cadastrado", async ({ page, testUser: user }) => {
     await page.goto("/cadastro");
     await page.getByLabel("Email").fill(user.email);
     await page.getByLabel("Senha", { exact: true }).fill("senha-segura");
@@ -29,14 +23,11 @@ test.describe("cadastro", () => {
     await page.getByRole("button", { name: "Criar conta" }).click();
 
     await expect(page.getByRole("alert").filter({ hasText: "Email já cadastrado" })).toBeVisible();
-    await user.remove();
   });
 });
 
 test.describe("login", () => {
-  test("mostra erro genérico para senha incorreta", async ({ page }) => {
-    const user = await createTestUser();
-
+  test("mostra erro genérico para senha incorreta", async ({ page, testUser: user }) => {
     await page.goto("/login");
     await page.getByLabel("Email").fill(user.email);
     await page.getByLabel("Senha").fill("senha-errada");
@@ -44,7 +35,6 @@ test.describe("login", () => {
 
     await expect(page.getByRole("alert").filter({ hasText: "Email ou senha inválidos" })).toBeVisible();
     await expect(page.getByLabel("Email")).toHaveValue(user.email);
-    await user.remove();
   });
 });
 

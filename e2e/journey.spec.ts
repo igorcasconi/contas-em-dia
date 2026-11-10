@@ -1,4 +1,7 @@
-import { expect, type Page, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
+
+import { expect, test } from "./fixtures";
+import { openPayment } from "./helpers";
 
 test.use({ viewport: { width: 375, height: 812 } });
 
@@ -7,19 +10,14 @@ const pickOption = async (page: Page, label: string, option: string) => {
   await page.getByRole("option", { name: option, exact: true }).click();
 };
 
-const openPayment = async (page: Page, kind: "Boleto" | "Cartão de crédito") => {
-  await page.getByRole("button", { name: "Adicionar pagamento" }).click();
-  await pickOption(page, "Tipo de pagamento", kind);
-};
-
-test("jornada completa em 375px", async ({ page }, testInfo) => {
+test("jornada completa em 375px", async ({ page, signUpEmail }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "jornada roda uma vez, em 375px");
   const dialog = page.getByRole("dialog");
   const nav = page.getByRole("navigation", { name: "Menu inferior" });
 
   // Cadastro → onboarding
   await page.goto("/cadastro");
-  await page.getByLabel("Email").fill(`journey-${crypto.randomUUID()}@example.com`);
+  await page.getByLabel("Email").fill(signUpEmail);
   await page.getByLabel("Senha", { exact: true }).fill("senha-segura");
   await page.getByLabel("Confirmar senha").fill("senha-segura");
   await page.getByRole("button", { name: "Criar conta" }).click();

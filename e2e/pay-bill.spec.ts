@@ -1,27 +1,23 @@
-import { expect, type Page, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
-import { loginAsOnboardedUser } from "./helpers";
+import { must } from "@/supabase/tests/helpers";
 
-const openBillPayment = async (page: Page) => {
-  await page.getByRole("button", { name: "Adicionar pagamento" }).click();
-  const dialog = page.getByRole("dialog");
-  await dialog.getByLabel("Tipo de pagamento").click();
-  await page.getByRole("option", { name: "Boleto" }).click();
-  return dialog;
-};
+import { expect, test } from "./fixtures";
+import { openPayment } from "./helpers";
+
+const openBillPayment = (page: Page) => openPayment(page, "Boleto");
 
 const selectBill = async (page: Page, name: string) => {
   await page.getByRole("dialog").getByLabel("Boleto").click();
   await page.getByRole("option", { name }).click();
 };
 
-test("paga boleto fixo e variável; pagos saem do select", async ({ page }) => {
-  const user = await loginAsOnboardedUser(page);
-  const { data: category } = await user.client.from("categories").insert({ name: "Casa" }).select("id").single();
-  await user.client.from("bills").insert([
-    { name: "Vivo", category_id: category!.id, value_mode: "fixed", amount_cents: 12000 },
-    { name: "Enel", category_id: category!.id, value_mode: "variable" },
-  ]);
+test("paga boleto fixo e variável; pagos saem do select", async ({ page, onboardedUser: user }) => {
+  const category = must(await user.client.from("categories").insert({ name: "Casa" }).select("id").single());
+  must(await user.client.from("bills").insert([
+    { name: "Vivo", category_id: category.id, value_mode: "fixed", amount_cents: 12000 },
+    { name: "Enel", category_id: category.id, value_mode: "variable" },
+  ]).select());
   await page.reload();
 
   let dialog = await openBillPayment(page);
@@ -44,8 +40,6 @@ test("paga boleto fixo e variável; pagos saem do select", async ({ page }) => {
   await openBillPayment(page);
   await expect(page.getByText("Nenhum boleto pendente neste mês.")).toBeVisible();
 
-  const { data: payments } = await user.client.from("payments").select("total_cents").order("total_cents");
+  const payments = must(await user.client.from("payments").select("total_cents").order("total_cents"));
   expect(payments).toEqual([{ total_cents: 12000 }, { total_cents: 18745 }]);
-
-  await user.remove();
 });
