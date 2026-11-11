@@ -1,7 +1,7 @@
 "use client";
 
 import { LockIcon, PauseIcon, Trash2Icon } from "lucide-react";
-import { type FormEvent, useState, useTransition } from "react";
+import { type FormEvent, useId, useState, useTransition } from "react";
 
 import { removeCardItemCopy } from "@/domains/card-items/services/removal-copy";
 import { ConfirmDialog } from "@/shared/components/ConfirmDialog";
@@ -91,6 +91,7 @@ type CardPaymentFormProps = {
 };
 
 export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPaymentFormProps) => {
+  const itemsLabelId = useId();
   const [bankId, setBankId] = useState<string>();
   const [choices, setChoices] = useState<Record<string, Choice>>({});
   const [error, setError] = useState<string>();
@@ -123,7 +124,7 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
   };
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4">
+    <form onSubmit={submit} className="flex min-h-0 flex-col gap-4">
       <SelectField
         label="Banco"
         name="bankId"
@@ -137,9 +138,13 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
       />
 
       {bankId && (
-        <fieldset className="flex flex-col">
-          <legend className="text-sm font-medium">Itens da fatura</legend>
-          <ul className="divide-y">
+        // div (não fieldset): fieldset ignora min-height/overflow no flex e não rola
+        <div role="group" aria-labelledby={itemsLabelId} className="flex min-h-0 flex-col">
+          <p id={itemsLabelId} className="text-sm font-medium">
+            Itens da fatura
+          </p>
+          {/* relative: inputs ocultos dos checkboxes são absolute e vazariam do scroll da lista */}
+          <ul className="relative min-h-0 divide-y overflow-y-auto">
             {items.map((item) => (
               <ChecklistItem
                 key={item.id}
@@ -150,7 +155,7 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
               />
             ))}
           </ul>
-        </fieldset>
+        </div>
       )}
 
       <PaymentTotalFooter totalCents={totalCents} pending={pending} disabled={totalCents === 0} error={error} />
