@@ -58,7 +58,8 @@ export const AddPaymentDialog = ({
           Adicionar pagamento
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      {/* Altura máx. = tela - 30px em cima/embaixo; só a lista de itens do cartão rola */}
+      <DialogContent className="flex max-h-[calc(100dvh-60px)] flex-col">
         <DialogHeader>
           <DialogTitle>Adicionar pagamento</DialogTitle>
         </DialogHeader>
