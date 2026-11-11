@@ -143,7 +143,8 @@ export const CardPaymentForm = ({ banks, removeItemAction, onDone }: CardPayment
           <p id={itemsLabelId} className="text-sm font-medium">
             Itens da fatura
           </p>
-          <ul className="min-h-0 divide-y overflow-y-auto">
+          {/* relative: inputs ocultos dos checkboxes são absolute e vazariam do scroll da lista */}
+          <ul className="relative min-h-0 divide-y overflow-y-auto">
             {items.map((item) => (
               <ChecklistItem
                 key={item.id}
